@@ -5,30 +5,36 @@ import WaveSurferProvider, {
   WaveForm
 } from "./components/WaveSurfer";
 
-import WaveSurfer from "wavesurfer.js";
-import TimelinePlugin from "wavesurfer.js/dist/plugin/wavesurfer.timeline.min.js";
-import MinimapPlugin from "wavesurfer.js/dist/plugin/wavesurfer.minimap.min.js";
-
 import "./styles.css";
+
+const waveSurferPlugins = [
+    'minimap',
+    { name: 'regions', options: { dragSelection: { enableDragSelection: true } } }
+];
 
 function App() {
   const wavesurferRef = useRef(null);
 
   useEffect(() => {
-    wavesurferRef.current.on("ready", () => {
-      console.log("WaveSurfer is ready");
-    });
+    if (wavesurferRef.current) {
+      wavesurferRef.current.load("/bensound-ukulele.mp3");
 
-    wavesurferRef.current.on("loading", data => {
-      console.log(data);
-    });
+      wavesurferRef.current.on("ready", () => {
+        console.log("WaveSurfer is ready");
+      });
+
+      wavesurferRef.current.on("loading", data => {
+        console.log(data);
+      });
+    }
   }, [wavesurferRef]);
+
 
   return (
     <div className="App">
-      <WaveSurferProvider plugins={["minimap", "regions"]} ref={wavesurferRef}>
+      <WaveSurferProvider plugins={waveSurferPlugins} ref={wavesurferRef}>
         <WaveForm />
-        <TimeLine id="wave-timeline" />
+        <TimeLine />
       </WaveSurferProvider>
     </div>
   );

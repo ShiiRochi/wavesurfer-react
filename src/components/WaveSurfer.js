@@ -1,10 +1,17 @@
 import React, { useRef } from "react";
 import WaveSurferFactory from "wavesurfer.js";
+import RegionsPlugin from "wavesurfer.js/dist/plugin/wavesurfer.regions.min";
 import TimelinePlugin from "wavesurfer.js/dist/plugin/wavesurfer.timeline.min.js";
 import MinimapPlugin from "wavesurfer.js/dist/plugin/wavesurfer.minimap.min.js";
 import { useEffect } from "react";
 
 const createSurfer = options => WaveSurferFactory.create(options);
+
+const createMinimapPlugin = options => MinimapPlugin.create(options);
+
+const createTimelinePlugin = options => TimelinePlugin.create(options);
+
+const createRegionsPlugin = (options) => WaveSurferFactory.regions.create(options);
 
 export const WaveForm = ({ id }) => {
   return <div id={id} />;
@@ -25,7 +32,7 @@ TimeLine.defaultProps = {
 };
 
 const WaveSurfer = React.forwardRef(
-  ({ children, minimap, innerRef, plugins, ...props }, ref) => {
+  ({ children, innerRef, plugins, ...props }, ref) => {
     const waveSurfer = useRef(null);
 
     useEffect(() => {
@@ -50,19 +57,43 @@ const WaveSurfer = React.forwardRef(
         }
       });
 
-      let plugins = [];
+      let enabledPlugins = [...plugins];
 
       if (timeLineProps) {
-        plugins = [...plugins, TimelinePlugin.create(timeLineProps)];
+        enabledPlugins = [...enabledPlugins, { name: 'timeline', options: timeLineProps }];
       }
 
-      if (minimap) {
-        plugins = [...plugins, MinimapPlugin.create()];
-      }
 
       let options = {
         ...(waveFormProps && waveFormProps),
-        plugins
+        plugins: enabledPlugins.reduce((pluginsList, currentPlugin) => {
+          try {
+            if (typeof currentPlugin === "string") {
+              switch (currentPlugin) {
+                case 'regions':
+                  return [...pluginsList, RegionsPlugin.create({})];
+                case 'minimap':
+                  return [...pluginsList, MinimapPlugin.create({})];
+                case 'timeline':
+                  return [...pluginsList, TimelinePlugin.create({})];
+              }
+            } else if (typeof currentPlugin === "object") {
+              switch (currentPlugin.name) {
+                case 'regions':
+                  return [...pluginsList, RegionsPlugin.create(currentPlugin.options)];
+                case 'minimap':
+                  return [...pluginsList, MinimapPlugin.create(currentPlugin.options)];
+                case 'timeline':
+                  return [...pluginsList, TimelinePlugin.create(currentPlugin.options)];
+              }
+            }
+          } catch (e) {
+            console.log('error:', e);
+            return pluginsList;
+          }
+
+          return pluginsList;
+        }, [])
       };
 
       if (waveSurfer.current) {
@@ -75,9 +106,7 @@ const WaveSurfer = React.forwardRef(
       if (ref) {
         ref.current = waveSurfer.current;
       }
-
-      waveSurfer.current.load("/bensound-ukulele.mp3");
-    }, [minimap]);
+    }, [plugins]);
 
     useEffect(() => {
       if (!waveSurfer.current) return;
@@ -93,7 +122,7 @@ const WaveSurfer = React.forwardRef(
 
 WaveSurfer.defaultProps = {
   children: null,
-  minimap: false
+  plugins: []
 };
 
 export default WaveSurfer;
