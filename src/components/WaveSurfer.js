@@ -1,9 +1,14 @@
-import React, { useRef } from "react";
+import React, { useRef, createContext, useContext, useState } from "react";
 import WaveSurferFactory from "wavesurfer.js";
 import RegionsPlugin from "wavesurfer.js/dist/plugin/wavesurfer.regions.min";
-import TimelinePlugin from "wavesurfer.js/dist/plugin/wavesurfer.timeline.min.js";
-import MinimapPlugin from "wavesurfer.js/dist/plugin/wavesurfer.minimap.min.js";
+import TimelinePlugin from "wavesurfer.js/dist/plugin/wavesurfer.timeline.min";
+import MinimapPlugin from "wavesurfer.js/dist/plugin/wavesurfer.minimap.min";
+import MicrophonePlugin from "wavesurfer.js/dist/plugin/wavesurfer.microphone.min";
+
 import { useEffect } from "react";
+import useRegionEvent from "../hooks/useRegionEvent";
+
+const WaveSurferContext = createContext(null);
 
 const createSurfer = options => WaveSurferFactory.create(options);
 
@@ -11,10 +16,59 @@ const createMinimapPlugin = options => MinimapPlugin.create(options);
 
 const createTimelinePlugin = options => TimelinePlugin.create(options);
 
-const createRegionsPlugin = (options) => WaveSurferFactory.regions.create(options);
+const createRegionsPlugin = (options) => RegionsPlugin.create(options);
 
-export const WaveForm = ({ id }) => {
-  return <div id={id} />;
+const createMicrophonePlugin = (options) => MicrophonePlugin.create(options);
+
+export const Region = ({ onOver, onLeave, onClick, onDoubleClick, onIn, onOut, onRemove, onUpdate, onUpdateEnd, ...props }) => {
+  const waveSurfer = useContext(WaveSurferContext);
+
+  const isRenderedCache = useRef(false);
+
+  const [regionRef, setRegionRef] = useState(null);
+
+  useEffect(() => {
+    return () => {
+      if (regionRef) {
+        regionRef.remove();
+      }
+    }
+  }, [regionRef])
+
+  useEffect(() => {
+    if (!isRenderedCache.current && waveSurfer) {
+      isRenderedCache.current = true;
+
+      let region = waveSurfer.addRegion(props);
+
+      setRegionRef(region);
+    }
+  }, [waveSurfer]);
+
+  useRegionEvent(regionRef, 'click', onClick);
+
+  useRegionEvent(regionRef, 'over', onOver);
+
+  useRegionEvent(regionRef, 'leave', onLeave);
+
+  useRegionEvent(regionRef, 'dbclick', onDoubleClick)
+
+  useRegionEvent(regionRef, 'in', onIn)
+
+  useRegionEvent(regionRef, 'out', onOut)
+
+  useRegionEvent(regionRef, 'remove', onRemove)
+
+  useRegionEvent(regionRef, 'update', onUpdate);
+
+  useRegionEvent(regionRef, 'update-end', onUpdateEnd)
+
+  return null;
+};
+
+export const WaveForm = ({ id, children }) => {
+
+  return <div id={id}>{children}</div>;
 };
 
 WaveForm.defaultProps = {
@@ -33,9 +87,10 @@ TimeLine.defaultProps = {
 
 const WaveSurfer = React.forwardRef(
   ({ children, innerRef, plugins, ...props }, ref) => {
-    const waveSurfer = useRef(null);
+    const [ waveSurfer, setWaveSurfer ] = useState(null);
+    // const waveSurfer = useRef(null);
 
-    useEffect(() => {
+    useEffect( () => {
       let timeLineProps = null;
       let waveFormProps = null;
 
@@ -59,8 +114,33 @@ const WaveSurfer = React.forwardRef(
 
       let enabledPlugins = [...plugins];
 
+      const timelinePluginIndex = plugins.findIndex(plugin => {
+        if (typeof plugin === "string") return plugin === 'timeline';
+
+        if (typeof plugin === 'object') return plugin.name === 'timeline';
+
+        return false;
+      });
+
+      // if timeline is not present in plugins list,
+      //  then add timeLineProps as only options
+      // if timeline is present in plugins list and it is a string,
+      //  then add timeLineProps as only options
+      // if timeline is present in plugins list and it is an object,
+      //  then merge timeLineProps with defined options for timeline
       if (timeLineProps) {
-        enabledPlugins = [...enabledPlugins, { name: 'timeline', options: timeLineProps }];
+        if (timelinePluginIndex !== -1) {
+          if (typeof plugins[timelinePluginIndex] === "string") {
+            enabledPlugins[timelinePluginIndex] = { name: 'timeline', options: timeLineProps};
+          } else if (typeof plugins[timeLineProps] === 'object') {
+            enabledPlugins[timelinePluginIndex] = {
+              ...plugins[timeLineProps],
+              ...timeLineProps
+            };
+          }
+        } else {
+          enabledPlugins[timelinePluginIndex] = { name: 'timeline', options: timeLineProps};
+        }
       }
 
 
@@ -71,20 +151,24 @@ const WaveSurfer = React.forwardRef(
             if (typeof currentPlugin === "string") {
               switch (currentPlugin) {
                 case 'regions':
-                  return [...pluginsList, RegionsPlugin.create({})];
+                  return [...pluginsList, createRegionsPlugin({})];
                 case 'minimap':
-                  return [...pluginsList, MinimapPlugin.create({})];
+                  return [...pluginsList, createMinimapPlugin({})];
                 case 'timeline':
-                  return [...pluginsList, TimelinePlugin.create({})];
+                  return [...pluginsList, createTimelinePlugin({})];
+                case 'microphone':
+                  return [...pluginsList, createMicrophonePlugin({})];
               }
             } else if (typeof currentPlugin === "object") {
               switch (currentPlugin.name) {
                 case 'regions':
-                  return [...pluginsList, RegionsPlugin.create(currentPlugin.options)];
+                  return [...pluginsList, createRegionsPlugin(currentPlugin.options)];
                 case 'minimap':
-                  return [...pluginsList, MinimapPlugin.create(currentPlugin.options)];
+                  return [...pluginsList, createMinimapPlugin(currentPlugin.options)];
                 case 'timeline':
-                  return [...pluginsList, TimelinePlugin.create(currentPlugin.options)];
+                  return [...pluginsList, createTimelinePlugin(currentPlugin.options)];
+                case 'microphone':
+                  return [...pluginsList, createMicrophonePlugin(currentPlugin.options)];
               }
             }
           } catch (e) {
@@ -96,27 +180,33 @@ const WaveSurfer = React.forwardRef(
         }, [])
       };
 
-      if (waveSurfer.current) {
-        waveSurfer.current.destroy();
-        waveSurfer.current = null;
+      if (waveSurfer) {
+        waveSurfer.destroy();
+        setWaveSurfer(null);
       }
 
-      waveSurfer.current = createSurfer(options);
+      let ws = createSurfer(options)
+
+      setWaveSurfer(ws);
 
       if (ref) {
-        ref.current = waveSurfer.current;
+        ref.current = ws;
       }
     }, [plugins]);
 
     useEffect(() => {
-      if (!waveSurfer.current) return;
+      if (!waveSurfer) return;
 
       return () => {
-        waveSurfer.current.destroy();
+        waveSurfer.destroy();
       };
     }, [waveSurfer]);
 
-    return children;
+    return (
+        <WaveSurferContext.Provider value={waveSurfer}>
+          {children}
+        </WaveSurferContext.Provider>
+    );
   }
 );
 
