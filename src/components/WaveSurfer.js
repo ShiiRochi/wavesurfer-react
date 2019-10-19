@@ -191,6 +191,7 @@ const WaveSurfer = React.forwardRef(
       if (ref) {
         ref.current = ws;
       }
+      // TODO: feature --> add and remove plugins on plugins list change
       // we do such huge calculations only on mount
       // eslint-disable-next-line
     }, []);
