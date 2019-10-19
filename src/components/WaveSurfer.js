@@ -1,12 +1,14 @@
-import React, { useRef, createContext, useContext, useState } from "react";
+import React, { useRef, createContext, useContext, useState, useEffect } from "react";
 import WaveSurferFactory from "wavesurfer.js";
-
 import RegionsPlugin from "wavesurfer.js/dist/plugin/wavesurfer.regions.min";
 import TimelinePlugin from "wavesurfer.js/dist/plugin/wavesurfer.timeline.min";
 import MinimapPlugin from "wavesurfer.js/dist/plugin/wavesurfer.minimap.min";
 import MicrophonePlugin from "wavesurfer.js/dist/plugin/wavesurfer.microphone.min";
+import MediaSessionPlugin from "wavesurfer.js/dist/plugin/wavesurfer.mediasession.min";
+import SpectrogramPlugin from "wavesurfer.js/dist/plugin/wavesurfer.spectrogram.min";
+import ElanPlugin from "wavesurfer.js/dist/plugin/wavesurfer.elan.min";
+import CursorPlugin from "wavesurfer.js/dist/plugin/wavesurfer.cursor.min";
 
-import { useEffect } from "react";
 import useRegionEvent from "../hooks/useRegionEvent";
 
 const WaveSurferContext = createContext(null);
@@ -17,9 +19,28 @@ const createMinimapPlugin = options => MinimapPlugin.create(options);
 
 const createTimelinePlugin = options => TimelinePlugin.create(options);
 
-const createRegionsPlugin = (options) => RegionsPlugin.create(options);
+const createRegionsPlugin = options => RegionsPlugin.create(options);
 
-const createMicrophonePlugin = (options) => MicrophonePlugin.create(options);
+const createMicrophonePlugin = options => MicrophonePlugin.create(options);
+
+const createMediaSessionPlugin = options => MediaSessionPlugin.create(options);
+
+const createSpectrogramPlugin = options => SpectrogramPlugin.create(options);
+
+const createElanPlugin = options => ElanPlugin.create(options);
+
+const createCursorPlugin = options => CursorPlugin.create(options);
+
+const pluginToCreatorMap = {
+  minimap: createMinimapPlugin,
+  timeline: createTimelinePlugin,
+  regions: createRegionsPlugin,
+  microphone: createMicrophonePlugin,
+  mediasession: createMediaSessionPlugin,
+  spectrogram: createSpectrogramPlugin,
+  elan: createElanPlugin,
+  cursor: createCursorPlugin,
+};
 
 export const Region = ({ onOver, onLeave, onClick, onDoubleClick, onIn, onOut, onRemove, onUpdate, onUpdateEnd, ...props }) => {
   const waveSurfer = useContext(WaveSurferContext);
@@ -44,6 +65,7 @@ export const Region = ({ onOver, onLeave, onClick, onDoubleClick, onIn, onOut, o
 
       setRegionRef(region);
     }
+    // eslint-disable-next-line
   }, [waveSurfer]);
 
   useRegionEvent(regionRef, 'click', onClick);
@@ -123,18 +145,6 @@ const WaveSurfer = React.forwardRef(
         return false;
       });
 
-      const activePluginsNamesList = enabledPlugins.map(plugin => {
-        if (typeof plugin === "string") return plugin;
-
-        return plugin.name;
-      });
-
-      // if timeline is not present in plugins list,
-      //  then add timeLineProps as only options
-      // if timeline is present in plugins list and it is a string,
-      //  then add timeLineProps as only options
-      // if timeline is present in plugins list and it is an object,
-      //  then merge timeLineProps with defined options for timeline
       if (timeLineProps) {
         if (timelinePluginIndex !== -1) {
           if (typeof plugins[timelinePluginIndex] === "string") {
@@ -150,41 +160,15 @@ const WaveSurfer = React.forwardRef(
         }
       }
 
-      // load all required modules
-      // await Promise.all(...activePluginsNamesList.map(pluginName => {
-      //   switch (pluginName) {
-      //     case 'regions':
-      //       return RegionsPlugin();
-      //   }
-      // }));
-
 
       let options = {
         ...(waveFormProps && waveFormProps),
         plugins: enabledPlugins.reduce((pluginsList, currentPlugin) => {
           try {
             if (typeof currentPlugin === "string") {
-              switch (currentPlugin) {
-                case 'regions':
-                  return [...pluginsList, createRegionsPlugin({})];
-                case 'minimap':
-                  return [...pluginsList, createMinimapPlugin({})];
-                case 'timeline':
-                  return [...pluginsList, createTimelinePlugin({})];
-                case 'microphone':
-                  return [...pluginsList, createMicrophonePlugin({})];
-              }
+              return [...pluginsList, pluginToCreatorMap[currentPlugin]({})];
             } else if (typeof currentPlugin === "object") {
-              switch (currentPlugin.name) {
-                case 'regions':
-                  return [...pluginsList, createRegionsPlugin(currentPlugin.options)];
-                case 'minimap':
-                  return [...pluginsList, createMinimapPlugin(currentPlugin.options)];
-                case 'timeline':
-                  return [...pluginsList, createTimelinePlugin(currentPlugin.options)];
-                case 'microphone':
-                  return [...pluginsList, createMicrophonePlugin(currentPlugin.options)];
-              }
+              return [...pluginsList, pluginToCreatorMap[currentPlugin.name](currentPlugin.options)];
             }
           } catch (e) {
             console.log('error:', e);
@@ -210,12 +194,6 @@ const WaveSurfer = React.forwardRef(
       // we do such huge calculations only on mount
       // eslint-disable-next-line
     }, []);
-
-    useEffect(() => {
-      if (waveSurfer) {
-        // const currentActivePlugins = waveSurfer.getActivePlugins();
-      }
-    }, [plugins])
 
     useEffect(() => {
       if (!waveSurfer) return;
