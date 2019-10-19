@@ -1,5 +1,6 @@
 import React, { useRef, createContext, useContext, useState } from "react";
 import WaveSurferFactory from "wavesurfer.js";
+
 import RegionsPlugin from "wavesurfer.js/dist/plugin/wavesurfer.regions.min";
 import TimelinePlugin from "wavesurfer.js/dist/plugin/wavesurfer.timeline.min";
 import MinimapPlugin from "wavesurfer.js/dist/plugin/wavesurfer.minimap.min";
@@ -90,7 +91,7 @@ const WaveSurfer = React.forwardRef(
     const [ waveSurfer, setWaveSurfer ] = useState(null);
     // const waveSurfer = useRef(null);
 
-    useEffect( () => {
+    useEffect(  () => {
       let timeLineProps = null;
       let waveFormProps = null;
 
@@ -122,6 +123,12 @@ const WaveSurfer = React.forwardRef(
         return false;
       });
 
+      const activePluginsNamesList = enabledPlugins.map(plugin => {
+        if (typeof plugin === "string") return plugin;
+
+        return plugin.name;
+      });
+
       // if timeline is not present in plugins list,
       //  then add timeLineProps as only options
       // if timeline is present in plugins list and it is a string,
@@ -142,6 +149,14 @@ const WaveSurfer = React.forwardRef(
           enabledPlugins[timelinePluginIndex] = { name: 'timeline', options: timeLineProps};
         }
       }
+
+      // load all required modules
+      // await Promise.all(...activePluginsNamesList.map(pluginName => {
+      //   switch (pluginName) {
+      //     case 'regions':
+      //       return RegionsPlugin();
+      //   }
+      // }));
 
 
       let options = {
@@ -192,7 +207,15 @@ const WaveSurfer = React.forwardRef(
       if (ref) {
         ref.current = ws;
       }
-    }, [plugins]);
+      // we do such huge calculations only on mount
+      // eslint-disable-next-line
+    }, []);
+
+    useEffect(() => {
+      if (waveSurfer) {
+        // const currentActivePlugins = waveSurfer.getActivePlugins();
+      }
+    }, [plugins])
 
     useEffect(() => {
       if (!waveSurfer) return;
