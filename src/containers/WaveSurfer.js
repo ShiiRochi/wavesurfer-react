@@ -42,6 +42,7 @@ const pluginToCreatorMap = {
   cursor: createCursorPlugin,
 };
 
+// TODO: idea --> maybe onMount event will be better, then ref passing
 const WaveSurfer = React.forwardRef(
   ({ children, innerRef, plugins, ...props }, ref) => {
     const [ waveSurfer, setWaveSurfer ] = useState(null);
@@ -122,6 +123,7 @@ const WaveSurfer = React.forwardRef(
 
       setWaveSurfer(ws);
 
+      // TODO: idea --> maybe onMount event will be better
       if (ref) {
         ref.current = ws;
       }
