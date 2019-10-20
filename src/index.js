@@ -1,11 +1,10 @@
 import React, { useRef, useEffect, useCallback, useState} from "react";
 import styled from 'styled-components';
 import ReactDOM from "react-dom";
-import WaveSurferProvider, {
-  Region,
-  TimeLine,
-  WaveForm
-} from "./components/WaveSurfer";
+import WaveSurferProvider from "./containers/WaveSurfer";
+import Region from "./components/Region";
+import WaveForm from "./components/WaveForm";
+import TimeLine from "./components/Timeline";
 
 import "./styles.css";
 
@@ -166,7 +165,6 @@ function App() {
                 Remove last region
             </Button>
         </Buttons>
-
     </div>
   );
 }

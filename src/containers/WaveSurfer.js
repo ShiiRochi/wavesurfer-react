@@ -1,4 +1,4 @@
-import React, { useRef, createContext, useContext, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import WaveSurferFactory from "wavesurfer.js";
 import RegionsPlugin from "wavesurfer.js/dist/plugin/wavesurfer.regions.min";
 import TimelinePlugin from "wavesurfer.js/dist/plugin/wavesurfer.timeline.min";
@@ -9,9 +9,9 @@ import SpectrogramPlugin from "wavesurfer.js/dist/plugin/wavesurfer.spectrogram.
 import ElanPlugin from "wavesurfer.js/dist/plugin/wavesurfer.elan.min";
 import CursorPlugin from "wavesurfer.js/dist/plugin/wavesurfer.cursor.min";
 
-import useRegionEvent from "../hooks/useRegionEvent";
-
-const WaveSurferContext = createContext(null);
+import WaveSurferContext from '../contexts/WaveSurferContext';
+import WaveForm from "../components/WaveForm";
+import TimeLine from "../components/Timeline";
 
 const createSurfer = options => WaveSurferFactory.create(options);
 
@@ -40,72 +40,6 @@ const pluginToCreatorMap = {
   spectrogram: createSpectrogramPlugin,
   elan: createElanPlugin,
   cursor: createCursorPlugin,
-};
-
-export const Region = ({ onOver, onLeave, onClick, onDoubleClick, onIn, onOut, onRemove, onUpdate, onUpdateEnd, ...props }) => {
-  const waveSurfer = useContext(WaveSurferContext);
-
-  const isRenderedCache = useRef(false);
-
-  const [regionRef, setRegionRef] = useState(null);
-
-  useEffect(() => {
-    return () => {
-      if (regionRef) {
-        regionRef.remove();
-      }
-    }
-  }, [regionRef])
-
-  useEffect(() => {
-    if (!isRenderedCache.current && waveSurfer) {
-      isRenderedCache.current = true;
-
-      let region = waveSurfer.addRegion(props);
-
-      setRegionRef(region);
-    }
-    // eslint-disable-next-line
-  }, [waveSurfer]);
-
-  useRegionEvent(regionRef, 'click', onClick);
-
-  useRegionEvent(regionRef, 'over', onOver);
-
-  useRegionEvent(regionRef, 'leave', onLeave);
-
-  useRegionEvent(regionRef, 'dbclick', onDoubleClick)
-
-  useRegionEvent(regionRef, 'in', onIn)
-
-  useRegionEvent(regionRef, 'out', onOut)
-
-  useRegionEvent(regionRef, 'remove', onRemove)
-
-  useRegionEvent(regionRef, 'update', onUpdate);
-
-  useRegionEvent(regionRef, 'update-end', onUpdateEnd)
-
-  return null;
-};
-
-export const WaveForm = ({ id, children }) => {
-
-  return <div id={id}>{children}</div>;
-};
-
-WaveForm.defaultProps = {
-  waveColor: "violet",
-  progressColor: "purple",
-  id: "waveform"
-};
-
-export const TimeLine = ({ id }) => {
-  return <div id={id} />;
-};
-
-TimeLine.defaultProps = {
-  id: "timeline"
 };
 
 const WaveSurfer = React.forwardRef(
