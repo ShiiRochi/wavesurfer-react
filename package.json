@@ -2,8 +2,13 @@
   "name": "wavesurfer-react",
   "version": "1.0.0",
   "description": "react wrapper for wavesurfer.js",
-  "keywords": ["react", "wavesurfer.js"],
-  "main": "src/index.js",
+  "keywords": [
+    "react", "wavesurfer.js"],
+  "main": "dist/index.js",
+  "author": {
+    "email": "shiirochi@yandex.ru",
+    "name": "Denis Bogdanenko"
+  },
   "peerDependencies": {
     "react": "16.8.6",
     "wavesurfer.js": "3.1.0"
