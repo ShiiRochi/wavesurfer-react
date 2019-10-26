@@ -10,7 +10,7 @@ const useRegionEvent = (ref, eventName, callback) => {
         }
 
         if (callback) {
-            callbackRef.current = (...args) => callback(...args, ref);
+            callbackRef.current = (...args) => callback(ref, ...args);
 
             ref.on(eventName, callbackRef.current);
         }
