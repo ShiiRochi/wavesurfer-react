@@ -6,6 +6,7 @@
     "react",
     "wavesurfer.js"
   ],
+  "license": "MIT",
   "main": "dist/index.js",
   "author": {
     "email": "shiirochi@yandex.ru",
