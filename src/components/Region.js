@@ -21,7 +21,13 @@ export const Region = ({ onOver, onLeave, onClick, onDoubleClick, onIn, onOut, o
         if (!isRenderedCache.current && waveSurfer) {
             isRenderedCache.current = true;
 
-            let region = waveSurfer.addRegion(props);
+            let region;
+
+            region = waveSurfer.regions.list[props.id];
+
+            if (!region) {
+                region = waveSurfer.addRegion(props);
+            }
 
             setRegionRef(region);
         }
