@@ -78,6 +78,8 @@ function App() {
       }
   ]);
 
+  // use regions ref to pass it inside useCallback
+  // so it will use always the most fresh version of regions list
   const regionsRef = useRef(regions);
 
   useEffect(() => {
