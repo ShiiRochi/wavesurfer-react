@@ -43,10 +43,8 @@ const pluginToCreatorMap = {
 };
 
 // TODO: idea --> maybe onMount event will be better, then ref passing
-const WaveSurfer = React.forwardRef(
-  ({ children, innerRef, plugins, ...props }, ref) => {
+const WaveSurfer = ({ children, plugins, onMount }) => {
     const [ waveSurfer, setWaveSurfer ] = useState(null);
-    // const waveSurfer = useRef(null);
 
     useEffect(  () => {
       let timeLineProps = null;
@@ -123,9 +121,8 @@ const WaveSurfer = React.forwardRef(
 
       setWaveSurfer(ws);
 
-      // TODO: idea --> maybe onMount event will be better
-      if (ref) {
-        ref.current = ws;
+      if (onMount) {
+        onMount(ws);
       }
       // TODO: feature --> add and remove plugins on plugins list change
       // we do such huge calculations only on mount
@@ -145,8 +142,7 @@ const WaveSurfer = React.forwardRef(
           {children}
         </WaveSurferContext.Provider>
     );
-  }
-);
+};
 
 WaveSurfer.defaultProps = {
   children: null,
