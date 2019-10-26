@@ -1,8 +1,8 @@
 {
   "name": "wavesurfer-react",
   "version": "1.0.0",
-  "description": "",
-  "keywords": [],
+  "description": "react wrapper for wavesurfer.js",
+  "keywords": ["react", "wavesurfer.js"],
   "main": "src/index.js",
   "peerDependencies": {
     "react": "16.8.6",
