@@ -1,9 +1,11 @@
 {
   "name": "wavesurfer-react",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "react wrapper for wavesurfer.js",
   "keywords": [
-    "react", "wavesurfer.js"],
+    "react",
+    "wavesurfer.js"
+  ],
   "main": "dist/index.js",
   "author": {
     "email": "shiirochi@yandex.ru",
