@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useCallback, useState} from "react";
+import React, { useRef,  useCallback, useState, useEffect} from "react";
 import styled from 'styled-components';
 import ReactDOM from "react-dom";
 import WaveSurferProvider from "./containers/WaveSurfer";
@@ -78,9 +78,26 @@ function App() {
       }
   ]);
 
+  const regionsRef = useRef(regions);
+
   useEffect(() => {
+      regionsRef.current = regions;
+  }, [regions]);
+
+  const regionCreatedHandler = useCallback((region) => {
+      console.log('region-created --> region:', region);
+
+      if (region.data.systemRegionId) return;
+
+      setRegions([...regionsRef.current, { ...region, data: { ...region.data, systemRegionId: -1 } }]);
+  }, [regionsRef]);
+
+  const handleWSMount = useCallback((waveSurfer) => {
+      wavesurferRef.current = waveSurfer;
     if (wavesurferRef.current) {
       wavesurferRef.current.load("/bensound-ukulele.mp3");
+
+      wavesurferRef.current.on('region-created', regionCreatedHandler);
 
       wavesurferRef.current.on("ready", () => {
         console.log("WaveSurfer is ready");
@@ -97,8 +114,12 @@ function App() {
       wavesurferRef.current.on('region-created', region => {
           console.log('region-created --> ', region);
       });
+
+      if (window) {
+          window.surferidze = wavesurferRef.current;
+      }
     }
-  }, [wavesurferRef]);
+  });
 
   const generateRegion = useCallback(
       () => {
@@ -140,7 +161,7 @@ function App() {
 
   return (
     <div className="App">
-      <WaveSurferProvider plugins={waveSurferPlugins} ref={wavesurferRef}>
+      <WaveSurferProvider plugins={waveSurferPlugins} onMount={handleWSMount}>
         <WaveForm>
             {
                 regions.map(regionProps => (
