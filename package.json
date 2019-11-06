@@ -32,7 +32,9 @@
     "not ie <= 11",
     "not op_mini all"
   ],
-  "dependencies": {},
+  "dependencies": {
+    "prop-types": "^15.7.2"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ShiiRochi/wavesurfer-react.git"
