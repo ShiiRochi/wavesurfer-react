@@ -10,7 +10,6 @@ const list = [
     'barRadius',
     'barWidth',
     'closeAudioContext',
-    'container',
     'cursorColor',
     'cursorWidth',
     'fillParent',
@@ -26,8 +25,11 @@ const list = [
     'normalize',
     'partialRender',
     'pixelRatio',
-    // we dont want it here and anywhere else
+    // we dont want it here and anywhere else, because...
+    // plugins are taken from props
     // 'plugins',
+    // container is constructed using id
+    // 'container',
     'progressColor',
     'removeMediaElementOnDestroy',
     'renderer',

@@ -64,8 +64,8 @@ const WaveSurfer = ({ children, plugins, onMount }) => {
           const derivedWaveFormOptions = getWaveFormOptionsFromProps(restElementProps);
 
           waveFormProps = {
+            ...derivedWaveFormOptions,
             container: `#${_id}`,
-            ...derivedWaveFormOptions
           };
         }
       });
