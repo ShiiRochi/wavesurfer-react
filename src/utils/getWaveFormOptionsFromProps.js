@@ -26,7 +26,8 @@ const list = [
     'normalize',
     'partialRender',
     'pixelRatio',
-    'plugins',
+    // we dont want it here and anywhere else
+    // 'plugins',
     'progressColor',
     'removeMediaElementOnDestroy',
     'renderer',
