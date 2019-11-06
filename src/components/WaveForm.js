@@ -39,7 +39,7 @@ WaveForm.defaultProps = {
     xhr: {},
 };
 
-WaveForm.PropTypes = {
+WaveForm.propTypes = {
     id: PropTypes.string.isRequired,
     audioRate: PropTypes.number,
     audioContext: PropTypes.object,
