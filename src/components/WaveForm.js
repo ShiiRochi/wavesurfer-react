@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 
 const WaveForm = ({ id, children }) => {
     return <div id={id}>{children}</div>;
@@ -38,45 +37,5 @@ WaveForm.defaultProps = {
     waveColor: "violet",
     xhr: {},
 };
-
-WaveForm.propTypes = {
-    id: PropTypes.string.isRequired,
-    audioRate: PropTypes.number,
-    audioContext: PropTypes.object,
-    audioScriptProcessor: PropTypes.object,
-    autoCenter: PropTypes.boolean,
-    backend: PropTypes.string,
-    backgroundColor: PropTypes.string,
-    barGap: PropTypes.number,
-    barHeight: PropTypes.number,
-    barRadius: PropTypes.number,
-    barWidth: PropTypes.number,
-    closeAudioContext: PropTypes.boolean,
-    cursorColor: PropTypes.string,
-    cursorWidth: PropTypes.number,
-    fillParent: PropTypes.boolean,
-    forceDecode: PropTypes.boolean,
-    height: PropTypes.number,
-    hideScrollbar: PropTypes.boolean,
-    interact: PropTypes.boolean,
-    loopSelection: PropTypes.boolean,
-    maxCanvasWidth: PropTypes.number,
-    mediaControls: PropTypes.boolean,
-    mediaType: PropTypes.oneOf(["audio", "video"]),
-    minPxPerSec: PropTypes.number,
-    normalize: PropTypes.boolean,
-    partialRender: PropTypes.boolean,
-    pixelRatio: PropTypes.number,
-    plugins: PropTypes.array,
-    progressColor: PropTypes.string,
-    removeMediaElementOnDestroy: PropTypes.boolean,
-    renderer: PropTypes.Object,
-    responsive: PropTypes.node,
-    scrollParent: PropTypes.boolean,
-    skipLength: PropTypes.number,
-    splitChannels: PropTypes.boolean,
-    waveColor: PropTypes.string,
-    xhr: PropTypes.Object,
-}
 
 export default WaveForm;
