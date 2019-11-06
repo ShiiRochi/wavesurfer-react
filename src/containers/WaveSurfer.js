@@ -12,6 +12,7 @@ import CursorPlugin from "wavesurfer.js/dist/plugin/wavesurfer.cursor.min";
 import WaveSurferContext from '../contexts/WaveSurferContext';
 import WaveForm from "../components/WaveForm";
 import TimeLine from "../components/Timeline";
+import getWaveFormOptionsFromProps from "../utils/getWaveFormOptionsFromProps";
 
 const createSurfer = options => WaveSurferFactory.create(options);
 
@@ -52,18 +53,19 @@ const WaveSurfer = ({ children, plugins, onMount }) => {
 
       React.Children.forEach(children, element => {
         const { props } = element;
+        const { id: _id, ...restElementProps } = props;
+        // TODO: feature --> create getTimelineOptionsFromProps
         if (element.type === TimeLine) {
-          const { id: timeLineContainer } = props;
           timeLineProps = {
-            container: `#${timeLineContainer}`
+            container: `#${_id}`
           };
         }
         if (element.type === WaveForm) {
-          const { id: waveFormContainer, waveColor, progressColor } = props;
+          const derivedWaveFormOptions = getWaveFormOptionsFromProps(restElementProps);
+
           waveFormProps = {
-            container: `#${waveFormContainer}`,
-            waveColor,
-            progressColor
+            container: `#${_id}`,
+            ...derivedWaveFormOptions
           };
         }
       });
