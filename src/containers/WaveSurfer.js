@@ -64,7 +64,7 @@ const WaveSurfer = ({ children, plugins, onMount }) => {
             container: `#${waveFormContainer}`,
             waveColor,
             progressColor,
-            ...propsp
+            ...props
           };
         }
       });
