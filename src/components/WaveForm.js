@@ -5,7 +5,6 @@ const WaveForm = ({ id, children }) => {
 };
 
 WaveForm.defaultProps = {
-    id: "waveform",
     audioRate: 1,
     autoCenter: true,
     backend: "WebAudio",
@@ -36,6 +35,7 @@ WaveForm.defaultProps = {
     splitChannels: false,
     waveColor: "violet",
     xhr: {},
+    id: "waveform",
 };
 
 export default WaveForm;

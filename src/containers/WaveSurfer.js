@@ -72,7 +72,6 @@ const WaveSurfer = ({ children, plugins, onMount }) => {
             barRadius,
             barWidth,
             closeAudioContext,
-            container,
             cursorColor,
             cursorWidth,
             fillParent,
@@ -100,7 +99,6 @@ const WaveSurfer = ({ children, plugins, onMount }) => {
             xhr,
           } = props;
           waveFormProps = {
-            container: `#${waveFormContainer}`,
             audioRate,
             audioContext,
             audioScriptProcessor,
@@ -112,7 +110,7 @@ const WaveSurfer = ({ children, plugins, onMount }) => {
             barRadius,
             barWidth,
             closeAudioContext,
-            container,
+            container: `#${waveFormContainer}`,
             cursorColor,
             cursorWidth,
             fillParent,
