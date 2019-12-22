@@ -1,6 +1,7 @@
 .idea
 /node_modules/
-demo/**
-dist/**
+/demo/*
+/dist/*
 npm-debug.log
 debug.log
+*.tgz
