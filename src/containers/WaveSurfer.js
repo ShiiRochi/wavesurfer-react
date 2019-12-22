@@ -1,149 +1,79 @@
-import React, { useState, useEffect } from "react";
-import WaveSurferFactory from "wavesurfer.js";
-import RegionsPlugin from "wavesurfer.js/dist/plugin/wavesurfer.regions.min";
-import TimelinePlugin from "wavesurfer.js/dist/plugin/wavesurfer.timeline.min";
-import MinimapPlugin from "wavesurfer.js/dist/plugin/wavesurfer.minimap.min";
-import MicrophonePlugin from "wavesurfer.js/dist/plugin/wavesurfer.microphone.min";
-import MediaSessionPlugin from "wavesurfer.js/dist/plugin/wavesurfer.mediasession.min";
-import SpectrogramPlugin from "wavesurfer.js/dist/plugin/wavesurfer.spectrogram.min";
-import ElanPlugin from "wavesurfer.js/dist/plugin/wavesurfer.elan.min";
-import CursorPlugin from "wavesurfer.js/dist/plugin/wavesurfer.cursor.min";
+import React, { useState, useEffect, useRef } from "react";
+import Types from "prop-types";
 
-import WaveSurferContext from '../contexts/WaveSurferContext';
+import WaveSurferContext from "../contexts/WaveSurferContext";
 import WaveForm from "../components/WaveForm";
-import TimeLine from "../components/Timeline";
+import createWavesurfer from "../utils/createWavesurfer";
 import getWaveFormOptionsFromProps from "../utils/getWaveFormOptionsFromProps";
+import createPlugin from "../utils/createPlugin";
 
-const createSurfer = options => WaveSurferFactory.create(options);
+const WaveSurfer = ({ children, plugins, onMount }) => {
+  const usedPluginsListCache = useRef([]);
+  const [waveSurfer, setWaveSurfer] = useState(null);
 
-const createMinimapPlugin = options => MinimapPlugin.create(options);
+  useEffect(() => {
+    let waveformProps = null;
 
-const createTimelinePlugin = options => TimelinePlugin.create(options);
+    // get timeline and waveform props
+    React.Children.forEach(children, element => {
+      const { props } = element;
+      // eslint-disable-next-line react/prop-types
+      const { id, ...rest } = props;
+      let derivedProps = null;
+      if (element.type === WaveForm && !waveformProps) {
+        derivedProps = getWaveFormOptionsFromProps(rest);
+        waveformProps = {
+          container: `${id}`,
+          ...derivedProps
+        };
+      }
+    });
 
-const createRegionsPlugin = options => RegionsPlugin.create(options);
+    // construct initial plugins list
+    let pluginsList = [];
 
-const createMicrophonePlugin = options => MicrophonePlugin.create(options);
+    if (plugins) {
+      pluginsList = plugins.map(createPlugin);
+    }
 
-const createMediaSessionPlugin = options => MediaSessionPlugin.create(options);
+    usedPluginsListCache.current = pluginsList.map(plugin => plugin.name);
 
-const createSpectrogramPlugin = options => SpectrogramPlugin.create(options);
+    if (waveSurfer) {
+      waveSurfer.destroy();
+      setWaveSurfer(null);
+    }
 
-const createElanPlugin = options => ElanPlugin.create(options);
+    let ws = createWavesurfer({
+      ...(waveformProps && waveformProps),
+      plugins: pluginsList
+    });
 
-const createCursorPlugin = options => CursorPlugin.create(options);
+    setWaveSurfer(ws);
 
-const pluginToCreatorMap = {
-  minimap: createMinimapPlugin,
-  timeline: createTimelinePlugin,
-  regions: createRegionsPlugin,
-  microphone: createMicrophonePlugin,
-  mediasession: createMediaSessionPlugin,
-  spectrogram: createSpectrogramPlugin,
-  elan: createElanPlugin,
-  cursor: createCursorPlugin,
+    if (onMount) {
+      onMount(ws);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!waveSurfer) return;
+
+    return () => {
+      waveSurfer.destroy();
+    };
+  }, [waveSurfer]);
+
+  return (
+    <WaveSurferContext.Provider value={waveSurfer}>
+      {children}
+    </WaveSurferContext.Provider>
+  );
 };
 
-// TODO: idea --> maybe onMount event will be better, then ref passing
-const WaveSurfer = ({ children, plugins, onMount }) => {
-    const [ waveSurfer, setWaveSurfer ] = useState(null);
-
-    useEffect(  () => {
-      let timeLineProps = null;
-      let waveFormProps = null;
-
-      React.Children.forEach(children, element => {
-        const { props } = element;
-        const { id: _id, ...restElementProps } = props;
-        // TODO: feature --> create getTimelineOptionsFromProps
-        if (element.type === TimeLine) {
-          timeLineProps = {
-            container: `#${_id}`
-          };
-        }
-        if (element.type === WaveForm) {
-          const derivedWaveFormOptions = getWaveFormOptionsFromProps(restElementProps);
-
-          waveFormProps = {
-            ...derivedWaveFormOptions,
-            container: `#${_id}`,
-          };
-        }
-      });
-
-      let enabledPlugins = [...plugins];
-
-      const timelinePluginIndex = plugins.findIndex(plugin => {
-        if (typeof plugin === "string") return plugin === 'timeline';
-
-        if (typeof plugin === 'object') return plugin.name === 'timeline';
-
-        return false;
-      });
-
-      if (timeLineProps) {
-        if (timelinePluginIndex !== -1) {
-          if (typeof plugins[timelinePluginIndex] === "string") {
-            enabledPlugins[timelinePluginIndex] = { name: 'timeline', options: timeLineProps};
-          } else if (typeof plugins[timeLineProps] === 'object') {
-            enabledPlugins[timelinePluginIndex] = {
-              ...plugins[timeLineProps],
-              ...timeLineProps
-            };
-          }
-        } else {
-          enabledPlugins[timelinePluginIndex] = { name: 'timeline', options: timeLineProps};
-        }
-      }
-
-
-      let options = {
-        ...(waveFormProps && waveFormProps),
-        plugins: enabledPlugins.reduce((pluginsList, currentPlugin) => {
-          try {
-            if (typeof currentPlugin === "string") {
-              return [...pluginsList, pluginToCreatorMap[currentPlugin]({})];
-            } else if (typeof currentPlugin === "object") {
-              return [...pluginsList, pluginToCreatorMap[currentPlugin.name](currentPlugin.options)];
-            }
-          } catch (e) {
-            console.log('error:', e);
-            return pluginsList;
-          }
-
-          return pluginsList;
-        }, [])
-      };
-
-      if (waveSurfer) {
-        waveSurfer.destroy();
-        setWaveSurfer(null);
-      }
-
-      let ws = createSurfer(options)
-
-      setWaveSurfer(ws);
-
-      if (onMount) {
-        onMount(ws);
-      }
-      // TODO: feature --> add and remove plugins on plugins list change
-      // we do such huge calculations only on mount
-      // eslint-disable-next-line
-    }, []);
-
-    useEffect(() => {
-      if (!waveSurfer) return;
-
-      return () => {
-        waveSurfer.destroy();
-      };
-    }, [waveSurfer]);
-
-    return (
-        <WaveSurferContext.Provider value={waveSurfer}>
-          {children}
-        </WaveSurferContext.Provider>
-    );
+WaveSurfer.propTypes = {
+  plugins: Types.arrayOf(Types.node),
+  children: Types.any,
+  onMount: Types.func
 };
 
 WaveSurfer.defaultProps = {
