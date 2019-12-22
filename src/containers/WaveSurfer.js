@@ -60,6 +60,7 @@ const WaveSurfer = ({ children, plugins, onMount }) => {
 
     return () => {
       waveSurfer.destroy();
+      setWaveSurfer(null);
     };
   }, [waveSurfer]);
 
