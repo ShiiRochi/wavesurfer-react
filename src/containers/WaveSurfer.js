@@ -24,7 +24,7 @@ const WaveSurfer = ({ children, plugins, onMount }) => {
         derivedProps = getWaveFormOptionsFromProps(rest);
         waveformProps = {
           ...derivedProps,
-          container: `#${id}`
+          container: "#" + id
         };
       }
     });
