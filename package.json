@@ -11,7 +11,7 @@
   "author": "Denis Bogdanenko <shiirochi@yandex.ru>",
   "peerDependencies": {
     "react": "16.8.6",
-    "wavesurfer.js": "3.1.0"
+    "wavesurfer.js": "^3.2.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.5.5",
