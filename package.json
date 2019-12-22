@@ -39,7 +39,9 @@
     "not ie <= 11",
     "not op_mini all"
   ],
-  "dependencies": {},
+  "dependencies": {
+    "lodash.differenceby": "^4.8.0"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ShiiRochi/wavesurfer-react.git"
