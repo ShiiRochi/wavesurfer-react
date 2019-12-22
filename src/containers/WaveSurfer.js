@@ -20,7 +20,7 @@ const WaveSurfer = ({ children, plugins, onMount }) => {
       // eslint-disable-next-line react/prop-types
       const { id, ...rest } = props;
       let derivedProps = null;
-      if (element.type === WaveForm && !waveformProps) {
+      if (element.type === WaveForm) {
         derivedProps = getWaveFormOptionsFromProps(rest);
         waveformProps = {
           ...derivedProps,
