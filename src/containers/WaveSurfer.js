@@ -13,24 +13,40 @@ const WaveSurfer = ({ children, plugins, onMount }) => {
   const [waveSurfer, setWaveSurfer] = useState(null);
 
   useEffect(() => {
+    return () => {
+      if (waveSurfer) {
+        waveSurfer.destroy();
+        setWaveSurfer(null);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
     if (waveSurfer) {
       let nextPluginsMap = plugins.map(createPlugin);
+
       const disabledPlugins = differenceBy(
-        usedPluginsListCache,
+        usedPluginsListCache.current,
         nextPluginsMap,
         "name"
       );
 
       const enabledPlugins = differenceBy(
         nextPluginsMap,
-        usedPluginsListCache,
+        usedPluginsListCache.current,
         "name"
       );
 
-      disabledPlugins.forEach(plugin =>
-        plugin.name ? waveSurfer.destroyPlugin(plugin.name) : null
-      );
-      enabledPlugins.forEach(waveSurfer.addPlugin);
+      usedPluginsListCache.current = nextPluginsMap;
+
+      disabledPlugins.forEach(plugin => {
+        if (!plugin.name) return;
+        waveSurfer.destroyPlugin(plugin.name);
+      });
+      enabledPlugins.forEach(plugin => {
+        if (!plugin.name) return;
+        waveSurfer.addPlugin(plugin).initPlugin(plugin.name);
+      });
     }
   }, [plugins]);
 
@@ -77,15 +93,6 @@ const WaveSurfer = ({ children, plugins, onMount }) => {
       onMount(ws);
     }
   }, []);
-
-  useEffect(() => {
-    if (!waveSurfer) return;
-
-    return () => {
-      waveSurfer.destroy();
-      setWaveSurfer(null);
-    };
-  }, [waveSurfer]);
 
   return (
     <WaveSurferContext.Provider value={waveSurfer}>
