@@ -11,7 +11,7 @@ and to do it as close to react style of doing things as its maintainer(-s) can p
 ### Differences from V1.0
 The main difference between **version 2** and **version 1** is a way of how plugins are passed to WaveSurfer component.
 
-In `V1` plugins are preimported, they keyed, so that you could just set tell name of a plugin and options for it. This decision could result in cases, when custom plugins can only be added via accessing reference of wavesurfer. Thus, `plugins` prop behaves like it is `initialPlugins`.
+In `V1` plugins are preimported, they keyed, so that you could just set name of a plugin and options for it. This decision could result in cases, when custom plugins can only be added via accessing reference of wavesurfer. Thus, `plugins` prop behaves like it is `initialPlugins`.
 
 ```js
 // Version 1 plugins prop format
