@@ -126,7 +126,7 @@ Rest passed props are passed as region's data into wavesurfer.
 
 ## Demo
 You can see how this package is intended to be used 
-[here](https://codesandbox.io/s/wavesurfer-react-2.0)
+[here](https://codesandbox.io/s/wavesurfer-react-20-gqvb6?from-embed)
 
 ## Roadmap
  - [x] Easy plugin add and remove after mount*
