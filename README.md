@@ -5,18 +5,18 @@
 # Wavesurfer React V2.0
 A simple wrapper around an awesome library called [wavesurfer.js](https://wavesurfer-js.org).  
 
-The purpose of the package is to provide and abstraction over wavesurfer.js API 
+The purpose of the package is to provide an abstraction over wavesurfer.js API 
 and to do it as close to react style of doing things as its maintainer(-s) can provide.
 
 ### Differences from V1.0
-The main difference between **version 2** and **version 1** is a way of how plugins are passed to WaveSurfer component.
+The main difference between **version 2** and **version 1** is the way of how plugins are passed to WaveSurfer component.
 
-In `V1` plugins are preimported, they keyed, so that you could just set name of a plugin and options for it. This decision could result in cases, when custom plugins can only be added via accessing reference of wavesurfer. Thus, `plugins` prop behaves like it is `initialPlugins`.
+In `V1` all wavesurfer.js plugins are preimported. You just have to set name of a plugin and options for it. This decision could result in cases, when custom plugins can only be added via accessing reference of wavesurfer. Thus, `plugins` prop behaves like `initialPlugins`.
 
 ```js
 // Version 1 plugins prop format
-// either pass only a string, that is a keyword associated with a plugin, 
-// or pass an object, with name property, that is a plugin keyword and with options property 
+// either pass a string, that is a keyword associated with a plugin, 
+// or pass an object, with "name" property, that is a plugin keyword and with "options" property 
 // to configure it
 const pluginsV1 = [
   "minimap",
@@ -126,7 +126,7 @@ Rest passed props are passed as region's data into wavesurfer.
 
 ## Demo
 You can see how this package is intended to be used 
-[here](https://codesandbox.io/s/wavesurfer-react-2.0)
+[here](https://codesandbox.io/s/wavesurfer-react-20-gqvb6?from-embed)
 
 ## Roadmap
  - [x] Easy plugin add and remove after mount*
