@@ -133,4 +133,5 @@ You can see how this package is intended to be used
  - [x] Typings: **PropTypes** vs Flow vs TypeScript
  - [ ] Make researches on webpack usage possibility and profit of such decision for bundling. 
  - [ ] Reduce amount of spelling mistakes in readme. 
+
 P.S. Tasks that are marked with start are in theory possible.
