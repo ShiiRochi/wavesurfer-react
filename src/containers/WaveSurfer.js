@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from "react";
-import differenceBy from "lodash.differenceby";
 import Types from "prop-types";
 
 import WaveSurferContext from "../contexts/WaveSurferContext";
@@ -7,6 +6,7 @@ import WaveForm from "../components/WaveForm";
 import createWavesurfer from "../utils/createWavesurfer";
 import getWaveFormOptionsFromProps from "../utils/getWaveFormOptionsFromProps";
 import createPlugin from "../utils/createPlugin";
+import getDifference from "../utils/getDifference";
 
 const WaveSurfer = ({ children, plugins, onMount }) => {
   const usedPluginsListCache = useRef([]);
@@ -25,25 +25,19 @@ const WaveSurfer = ({ children, plugins, onMount }) => {
     if (waveSurfer) {
       let nextPluginsMap = plugins.map(createPlugin);
 
-      const disabledPlugins = differenceBy(
+      const { disabled, enabled } = getDifference(
         usedPluginsListCache.current,
-        nextPluginsMap,
-        "name"
-      );
-
-      const enabledPlugins = differenceBy(
-        nextPluginsMap,
-        usedPluginsListCache.current,
-        "name"
+        nextPluginsMap
       );
 
       usedPluginsListCache.current = nextPluginsMap;
 
-      disabledPlugins.forEach(plugin => {
+      disabled.forEach(plugin => {
         if (!plugin.name) return;
         waveSurfer.destroyPlugin(plugin.name);
       });
-      enabledPlugins.forEach(plugin => {
+
+      enabled.forEach(plugin => {
         if (!plugin.name) return;
         waveSurfer.addPlugin(plugin).initPlugin(plugin.name);
       });
