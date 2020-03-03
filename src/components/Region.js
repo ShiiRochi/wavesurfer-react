@@ -31,20 +31,30 @@ export const Region = ({
   // TODO: may need some improvements
   useEffect(() => {
     if (regionRef) {
-      let update = ["start", "end", "color", "data"].reduce((result, prop) => {
-        if (regionRef[prop] !== props[prop]) {
-          return {
-            ...result,
-            [prop]: props[prop]
-          };
-        }
+      let update = ["start", "end", "color", "data", "drag", "resize"].reduce(
+        (result, prop) => {
+          if (regionRef[prop] !== props[prop]) {
+            return {
+              ...result,
+              [prop]: props[prop]
+            };
+          }
 
-        return result;
-      }, {});
+          return result;
+        },
+        {}
+      );
 
       regionRef.update(update);
     }
-  }, [props.start, props.end, props.color, props.data]);
+  }, [
+    props.start,
+    props.end,
+    props.color,
+    props.data,
+    props.resize,
+    props.drag
+  ]);
 
   useEffect(() => {
     if (!isRenderedCache.current && waveSurfer) {
