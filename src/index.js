@@ -1,3 +1,1 @@
-export WaveSurfer from "./containers/WaveSurfer";
-export WaveForm from "./components/WaveForm";
-export Region from "./components/Region";
+export WaveSurfer from "./WaveSurfer";
