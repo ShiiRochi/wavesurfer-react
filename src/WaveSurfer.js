@@ -83,7 +83,10 @@ WaveSurfer.propTypes = {
 
 WaveSurfer.defaultProps = {
   children: null,
-  plugins: []
+  plugins: [],
+  form: {
+    container: "#wave-form"
+  }
 };
 
 export default WaveSurfer;
