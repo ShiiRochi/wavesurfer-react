@@ -85,7 +85,9 @@ WaveSurfer.defaultProps = {
   children: null,
   plugins: [],
   form: {
-    container: "#wave-form"
+    container: "#wave-form",
+    waveColor: "violet",
+    progressColor: "purple"
   }
 };
 
