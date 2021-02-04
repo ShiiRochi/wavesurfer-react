@@ -8,29 +8,8 @@ A simple wrapper around an awesome library called [wavesurfer.js](https://wavesu
 The purpose of the package is to provide an abstraction over wavesurfer.js API 
 and to do it as close to react style of doing things as its maintainer(-s) can provide.
 
-### Differences from V1.0
-The main difference between **version 2** and **version 1** is the way of how plugins are passed to WaveSurfer component.
-
-In `V1` all wavesurfer.js plugins are preimported. You just have to set name of a plugin and options for it. This decision could result in cases, when custom plugins can only be added via accessing reference of wavesurfer. Thus, `plugins` prop behaves like `initialPlugins`.
-
 ```js
-// Version 1 plugins prop format
-// either pass a string, that is a keyword associated with a plugin, 
-// or pass an object, with "name" property, that is a plugin keyword and with "options" property 
-// to configure it
-const pluginsV1 = [
-  "minimap",
-  { name: "regions", options: { dragSelection: true } }
-];
-```
-
-In `V2`, another approach was taken. Requirements for new system were: 
-1. only a required set of plugins should be passed, (you import only what you need)
-2. custom plugins should be available to be used with new plugins system,
-3. plugins prop format should be easily controlled, so that dynamic disable/enable of plugins would be easy to implement.
-
-```js
-// Version 2 plugins prop format
+// Plugins prop format
 // now you have to pass always an array of objects, where each can contain three properties,
 // only one of them is required - plugin;
 // plugin property is a plugin class, imported from wavesurfer.js
@@ -55,9 +34,6 @@ const pluginsV2 = [
   }
 ];
 ```
-
-#### Remove of TimeLine component
-Timeline component has been removed in `V2` becuase the only thing we could do with it is to set `id` attr, so that it was be foundable by TimelinePlugin.  
 
 ## User Guide
 ### Components
@@ -131,7 +107,6 @@ You can see how this package is intended to be used
 ## Roadmap
  - [x] Easy plugin add and remove after mount*
  - [x] Typings: **PropTypes** vs Flow vs TypeScript
- - [ ] Make researches on webpack usage possibility and profit of such decision for bundling. 
  - [ ] Reduce amount of spelling mistakes in readme. 
 
 P.S. Tasks that are marked with start are in theory possible.
