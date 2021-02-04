@@ -1,8 +1,4 @@
-#### Before reading further
-> `master` branch is now a host for a second version of `wavesurfer-react` package. 
-> If you want to see docs for the first version, then select `master-1` branch.  
-
-# Wavesurfer React V2.0
+# Wavesurfer React
 A simple wrapper around an awesome library called [wavesurfer.js](https://wavesurfer-js.org).  
 
 The purpose of the package is to provide an abstraction over wavesurfer.js API 
