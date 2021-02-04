@@ -31,7 +31,7 @@ export const Region = ({
   // TODO: may need some improvements
   useEffect(() => {
     if (regionRef) {
-      let update = ["start", "end", "color", "data", "drag", "resize"].reduce(
+      let update = ["start", "end", "color", "data", "drag", "resize", "attributes"].reduce(
         (result, prop) => {
           if (regionRef[prop] !== props[prop]) {
             return {
@@ -53,7 +53,8 @@ export const Region = ({
     props.color,
     props.data,
     props.resize,
-    props.drag
+    props.drag,
+    props.attributes
   ]);
 
   useEffect(() => {
