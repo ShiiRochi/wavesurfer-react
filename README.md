@@ -14,7 +14,7 @@ import RegionsPlugin from "wavesurfer.js/dist/plugin/wavesurfer.regions.min";
 import TimelinePlugin from "wavesurfer.js/dist/plugin/wavesurfer.timeline.min";
 import CursorPlugin from "wavesurfer.js/dist/plugin/wavesurfer.cursor.min";
 
-const pluginsV2 = [
+const plugins = [
   {
     plugin: RegionsPlugin,
     options: { dragSelection: true }
@@ -46,8 +46,8 @@ It accepts the following props set:
 2. onMount
 
 ##### Plugins Prop
-Is a list of plugins to use by WaveSurfer.
-Has the following format:
+
+It is a list of plugins to use by WaveSurfer and has the following format:
 ```js
 import { WaveSurfer } from 'wavesurfer-react';
 import MyCustomPlugin from 'my-custom-plugin-path'; 
@@ -64,24 +64,28 @@ const plugins = [myPlugin];
 
 <WaveSurfer plugins={plugins} />
 ```
-The `plugins` prop is watched inside WaveSurfer and if changed, then WaveSurfer will react on that.  
-If plugin was disabled (it's not enlisted in `plugins` prop) it will be destroyed, else added to wavesurfer plugins list and immediately initialized.
+
+The `plugins` prop is watched inside WaveSurfer.  
+If plugin was disabled (it's not enlisted in `plugins` prop) it will be destroyed, 
+otherwise added to wavesurfer plugins list and immediately initialized.
 
 ##### onMount prop
-Is a function, that will be called after WaveSurfer instance has been mounted.  
-Has only one argument - WaveSurfer instance.
+It is a function, that is called after WaveSurfer instance has been mounted.  
+It has only one argument - WaveSurfer instance.
 
 
 #### WaveForm
-This is used to configure WaveForm.
+It is used to configure WaveForm.
+
 It accepts all options, passed into WaveSurfer.create, but except **plugins**.  
 [Read the full list of available options](https://wavesurfer-js.org/docs/options.html).
 
 #### Region
-It is a some kind of a helper component. It can be used to imperatively control regions, appearing on WaveForm if you're using RegionsPlugin.  
+Think of it as a some kind of helper component. 
+It can be used to imperatively control regions, appearing on WaveForm if you're using RegionsPlugin.  
 If some of regions is already exist, then you will not face duplicates.   
 On mount, it will try to find region with the same region identifier and then attaches itself to it.  
-If region component did not find appropriate region, then it create region itself.
+If region component did not find appropriate region, then it creates a region itself.
 
 It accepts the following props:
 1. onOver - is called when mouse enters a region
@@ -96,6 +100,10 @@ It accepts the following props:
 
 Rest passed props are passed as region's data into wavesurfer.
 
+## Known Issues
+1. Issues with regions synchronization when using redux and `Region` component. 
+   Try to not hard-bind redux-state with wavesurfer-react to tight or use an instance of wavesurfer to operate regions.
+   
 ## Demo
 You can see how this package is intended to be used 
 [here](https://codesandbox.io/s/wavesurfer-react-20-gqvb6?from-embed)
@@ -104,5 +112,6 @@ You can see how this package is intended to be used
  - [x] Easy plugin add and remove after mount*
  - [x] Typings: **PropTypes** vs Flow vs TypeScript
  - [ ] Reduce amount of spelling mistakes in readme. 
+ - [ ] TypeScript is coming, maybe... 
 
 P.S. Tasks that are marked with start are in theory possible.
