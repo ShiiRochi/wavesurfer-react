@@ -61,15 +61,7 @@ export const Region = ({
 
       regionRef.update(update);
     }
-  }, [
-    props.start,
-    props.end,
-    props.color,
-    props.data,
-    props.resize,
-    props.drag,
-    props.attributes
-  ]);
+  }, UpdatableRegionProps.map(prop => props[prop]));
 
   useEffect(() => {
     if (!isRenderedCache.current && waveSurfer) {
