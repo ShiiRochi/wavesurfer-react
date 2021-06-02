@@ -2,6 +2,20 @@ import { useContext, useState, useEffect, useRef } from "react";
 import useRegionEvent from "../hooks/useRegionEvent";
 import WaveSurferContext from "../contexts/WaveSurferContext";
 
+const UpdatableRegionProps = [
+  "start",
+  "end",
+  "loop",
+  "color",
+  "handleStyle",
+  "data",
+  "resize",
+  "drag",
+  "maxLength",
+  "minLength",
+  "attributes"
+]
+
 export const Region = ({
   onOver,
   onLeave,
@@ -31,7 +45,7 @@ export const Region = ({
   // TODO: may need some improvements
   useEffect(() => {
     if (regionRef) {
-      let update = ["start", "end", "color", "data", "drag", "resize", "attributes"].reduce(
+      let update = UpdatableRegionProps.reduce(
         (result, prop) => {
           if (regionRef[prop] !== props[prop]) {
             return {
