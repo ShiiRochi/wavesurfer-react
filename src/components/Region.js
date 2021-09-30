@@ -86,7 +86,7 @@ export const Region = ({
 
   useRegionEvent(regionRef, "leave", onLeave);
 
-  useRegionEvent(regionRef, "dbclick", onDoubleClick);
+  useRegionEvent(regionRef, "dblclick", onDoubleClick);
 
   useRegionEvent(regionRef, "in", onIn);
 
