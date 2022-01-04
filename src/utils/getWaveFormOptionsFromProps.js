@@ -51,7 +51,7 @@ const waveFormPropsList = [
 const getWaveFormOptionsFromProps = props => {
   if (!props) return {};
   return waveFormPropsList.reduce((waveFormOptions, optionName) => {
-    if (!props[optionName]) {
+    if (!props.hasOwnProperty(optionName)) {
       return waveFormOptions;
     }
 
