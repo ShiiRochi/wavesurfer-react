@@ -15,7 +15,7 @@ export interface PluginType {
   creator?: string;
 }
 export interface WaveSurferProps {
-  children: JSX.Element[];
+  children: JSX.Element;
   plugins: PluginType[];
   onMount: (wavesurferRef: WaveSurfer) => any;
 }
@@ -34,7 +34,7 @@ const WaveSurfer = ({ children, plugins = [], onMount }: WaveSurferProps) => {
 
   useEffect(() => {
     if (waveSurfer) {
-      let nextPluginsMap = plugins.map(createPlugin);
+      const nextPluginsMap = plugins.map(createPlugin);
 
       const { disabled, enabled } = getDifference(
         usedPluginsListCache.current,
@@ -87,7 +87,7 @@ const WaveSurfer = ({ children, plugins = [], onMount }: WaveSurferProps) => {
       setWaveSurfer(null);
     }
 
-    let ws = createWavesurfer({
+    const ws = createWavesurfer({
       container: "wavesurfer",
       ...(typeof waveformProps == "object" ? waveformProps : {}),
       plugins: pluginsList,
