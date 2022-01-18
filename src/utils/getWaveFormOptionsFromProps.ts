@@ -102,12 +102,13 @@ export const waveFormPropsList: [
 const getWaveFormOptionsFromProps = (props: object): Omit<WaveSurferParams, 'container'> => {
   if (!props) return {};
   return waveFormPropsList.reduce((waveFormOptions, optionName) => {
-    if (!props.hasOwnProperty(optionName)) {
+    if (!Object.prototype.hasOwnProperty.call(props,optionName)) {
       return waveFormOptions;
     }
 
     return {
       ...waveFormOptions,
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore - ts doesnt recognize hasOwnProperty check
       [optionName]: props[optionName]
     };
