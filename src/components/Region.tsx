@@ -49,7 +49,7 @@ export const Region = ({
   useEffect(
     () => {
       if (regionRef) {
-        let update = UpdatableRegionProps.reduce<RegionParams>(
+        const update = UpdatableRegionProps.reduce<RegionParams>(
           (result, prop) => {
             if (regionRef[prop] !== props[prop]) {
               return {
