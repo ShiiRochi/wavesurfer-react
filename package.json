@@ -17,7 +17,6 @@
     "prepublishOnly": "npm run build"
   },
   "peerDependencies": {
-    "react": "^17.0.2",
     "wavesurfer.js": "^5.2.0"
   },
   "devDependencies": {
