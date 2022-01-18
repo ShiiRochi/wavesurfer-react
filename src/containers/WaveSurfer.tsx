@@ -1,16 +1,27 @@
-import React, { useState, useEffect, useRef } from "react";
 import Types from "prop-types";
-
-import WaveSurferContext from "../contexts/WaveSurferContext";
+import React, { useEffect, useRef, useState } from "react";
+import { WaveSurferParams } from "wavesurfer.js/types/params";
+import { PluginDefinition } from "wavesurfer.js/types/plugin";
 import WaveForm from "../components/WaveForm";
-import createWavesurfer from "../utils/createWavesurfer";
-import getWaveFormOptionsFromProps from "../utils/getWaveFormOptionsFromProps";
+import WaveSurferContext from "../contexts/WaveSurferContext";
 import createPlugin from "../utils/createPlugin";
+import createWavesurfer from "../utils/createWavesurfer";
 import getDifference from "../utils/getDifference";
+import getWaveFormOptionsFromProps from "../utils/getWaveFormOptionsFromProps";
 
-const WaveSurfer = ({ children, plugins, onMount }) => {
-  const usedPluginsListCache = useRef([]);
-  const [waveSurfer, setWaveSurfer] = useState(null);
+export interface PluginType {
+  plugin: object;
+  options: any;
+  creator?: string;
+}
+export interface WaveSurferProps {
+  children: JSX.Element[];
+  plugins: PluginType[];
+  onMount: (wavesurferRef: WaveSurfer) => any;
+}
+const WaveSurfer = ({ children, plugins = [], onMount }: WaveSurferProps) => {
+  const usedPluginsListCache = useRef<PluginDefinition[]>([]);
+  const [waveSurfer, setWaveSurfer] = useState<WaveSurfer | null>(null);
 
   useEffect(() => {
     return () => {
@@ -32,12 +43,12 @@ const WaveSurfer = ({ children, plugins, onMount }) => {
 
       usedPluginsListCache.current = nextPluginsMap;
 
-      disabled.forEach(plugin => {
+      disabled.forEach((plugin) => {
         if (!plugin.name) return;
         waveSurfer.destroyPlugin(plugin.name);
       });
 
-      enabled.forEach(plugin => {
+      enabled.forEach((plugin) => {
         if (!plugin.name) return;
         waveSurfer.addPlugin(plugin).initPlugin(plugin.name);
       });
@@ -45,25 +56,25 @@ const WaveSurfer = ({ children, plugins, onMount }) => {
   }, [plugins]);
 
   useEffect(() => {
-    let waveformProps = null;
+    let waveformProps: WaveSurferParams | null = null;
 
     // get timeline and waveform props
-    React.Children.forEach(children, element => {
+    React.Children.forEach(children, (element) => {
       const { props } = element;
-      // eslint-disable-next-line react/prop-types
+
       const { id, ...rest } = props;
       let derivedProps = null;
-      if (element.type === WaveForm) {
+      if (element?.type === WaveForm) {
         derivedProps = getWaveFormOptionsFromProps(rest);
         waveformProps = {
           ...derivedProps,
-          container: "#" + id
+          container: "#" + id,
         };
       }
     });
 
     // construct initial plugins list
-    let pluginsList = [];
+    let pluginsList: PluginDefinition[] = [];
 
     if (plugins) {
       pluginsList = plugins.map(createPlugin);
@@ -77,8 +88,9 @@ const WaveSurfer = ({ children, plugins, onMount }) => {
     }
 
     let ws = createWavesurfer({
-      ...(waveformProps && waveformProps),
-      plugins: pluginsList
+      container: "wavesurfer",
+      ...(typeof waveformProps == "object" ? waveformProps : {}),
+      plugins: pluginsList,
     });
 
     setWaveSurfer(ws);
@@ -99,16 +111,16 @@ WaveSurfer.propTypes = {
   plugins: Types.arrayOf(
     Types.shape({
       plugin: Types.any,
-      options: Types.any
+      options: Types.any,
     })
   ),
   children: Types.any,
-  onMount: Types.func
+  onMount: Types.func,
 };
 
 WaveSurfer.defaultProps = {
   children: null,
-  plugins: []
+  plugins: [],
 };
 
 export default WaveSurfer;
