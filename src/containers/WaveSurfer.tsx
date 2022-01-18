@@ -14,14 +14,15 @@ export interface PluginType {
   options: any;
   creator?: string;
 }
+export type WaveSurferRef = WaveSurfer;
 export interface WaveSurferProps {
   children: JSX.Element;
   plugins: PluginType[];
-  onMount: (wavesurferRef: WaveSurfer) => any;
+  onMount: (wavesurferRef: WaveSurferRef) => any;
 }
 const WaveSurfer = ({ children, plugins = [], onMount }: WaveSurferProps) => {
   const usedPluginsListCache = useRef<PluginDefinition[]>([]);
-  const [waveSurfer, setWaveSurfer] = useState<WaveSurfer | null>(null);
+  const [waveSurfer, setWaveSurfer] = useState<WaveSurferRef | null>(null);
 
   useEffect(() => {
     return () => {
