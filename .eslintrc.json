@@ -1,20 +1,25 @@
 {
-    "parser": "babel-eslint",
     "env": {
         "browser": true,
-        "es6": true
+        "es2021": true
     },
     "extends": [
         "eslint:recommended",
         "plugin:react/recommended",
-        "plugin:prettier/recommended"
+        "plugin:@typescript-eslint/recommended"
     ],
-    "globals": {
-        "Atomics": "readonly",
-        "SharedArrayBuffer": "readonly"
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+        "ecmaFeatures": {
+            "jsx": true
+        },
+        "ecmaVersion": 13,
+        "sourceType": "module"
     },
     "plugins": [
         "react",
-        "prettier"
-    ]
+        "@typescript-eslint"
+    ],
+    "rules": {
+    }
 }
