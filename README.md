@@ -83,7 +83,7 @@ It accepts all options, passed into WaveSurfer.create, but except **plugins**.
 #### Region
 Think of it as a some kind of helper component. 
 It can be used to imperatively control regions, appearing on WaveForm if you're using RegionsPlugin.  
-If some of regions is already exist, then you will not face duplicates.   
+If region is already present of WaveForm it creation will be avoided and existing instance is used.
 On mount, it will try to find region with the same region identifier and then attaches itself to it.  
 If region component did not find appropriate region, then it creates a region itself.
 
@@ -100,10 +100,23 @@ It accepts the following props:
 
 Rest passed props are passed as region's data into wavesurfer.
 
-## Known Issues
+#### Marker
+Can be used to imperatively control markers.
+For now, only `time` is updatable and is watched for further updates, that are coming from outside of component.
+
+It accepts the following props:
+1. `onClick` is emitted when marker is clicked  
+2. `onDrag` is emitted when drag operation is started  
+3. `onDrop` is emitted when element is released after drag
+
+Rest passed props are used as marker's data
+
+## Known Issues and Workaround
 1. Issues with regions synchronization when using redux and `Region` component. 
-   Try to not hard-bind redux-state with wavesurfer-react to tight or use an instance of wavesurfer to operate regions.
-   
+   Try to not hard-bind redux-state with wavesurfer-react too tight or use an instance of wavesurfer to operate regions. 
+2. [#2417: markers drag handlers not initialized with empty markers array in initial config](https://github.com/katspaugh/wavesurfer.js/issues/2417). Workaround is also presented there (and in demo link). You can use `onMount` to instantly clear artificial markers.
+
+
 ## Demo
 You can see how this package is intended to be used 
 [here](https://codesandbox.io/s/wavesurfer-react-20-gqvb6?from-embed)
@@ -111,7 +124,7 @@ You can see how this package is intended to be used
 ## Roadmap
  - [x] Easy plugin add and remove after mount*
  - [x] Typings: **PropTypes** vs Flow vs TypeScript
+ - [x] TypeScript is coming, maybe... 
  - [ ] Reduce amount of spelling mistakes in readme. 
- - [ ] TypeScript is coming, maybe... 
 
 P.S. Tasks that are marked with start are in theory possible.
