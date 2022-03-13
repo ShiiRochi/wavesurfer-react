@@ -17,7 +17,7 @@
     "prepublishOnly": "npm run build"
   },
   "peerDependencies": {
-    "wavesurfer.js": "^5.2.0"
+    "wavesurfer.js": "^4.0.0 || ^5.0.0 || ^6.0.0"
   },
   "devDependencies": {
     "@babel/preset-typescript": "^7.16.7",
