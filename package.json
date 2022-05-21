@@ -30,7 +30,6 @@
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-react": "^7.28.0",
     "prettier": "^2.5.1",
-    "prop-types": "^15.7.2",
     "rimraf": "^3.0.2"
   },
   "browserslist": [
@@ -46,8 +45,5 @@
   "bugs": {
     "url": "https://github.com/ShiiRochi/wavesurfer-react/issues"
   },
-  "homepage": "https://github.com/ShiiRochi/wavesurfer-react#readme",
-  "dependencies": {
-    "prop-type": "^0.0.1"
-  }
+  "homepage": "https://github.com/ShiiRochi/wavesurfer-react#readme"
 }
