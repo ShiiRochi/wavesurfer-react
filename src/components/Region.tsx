@@ -17,6 +17,7 @@ export interface RegionProps extends RegionParams {
   onRemove?: EventHandler;
   onUpdate?: EventHandler;
   onUpdateEnd?: EventHandler;
+  id: string;
 }
 export const Region = ({
   onOver,
@@ -28,7 +29,6 @@ export const Region = ({
   onRemove,
   onUpdate,
   onUpdateEnd,
-
   ...props
 }: RegionProps) => {
   const waveSurfer = useContext(WaveSurferContext);
@@ -108,6 +108,7 @@ export const Region = ({
 };
 
 export default Region;
+
 const UpdatableRegionProps: [
   "start",
   "end",
