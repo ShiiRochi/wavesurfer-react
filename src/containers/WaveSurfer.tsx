@@ -108,17 +108,6 @@ const WaveSurfer = ({ children, plugins = [], onMount }: WaveSurferProps) => {
   );
 };
 
-WaveSurfer.propTypes = {
-  plugins: Types.arrayOf(
-    Types.shape({
-      plugin: Types.any,
-      options: Types.any,
-    })
-  ),
-  children: Types.any,
-  onMount: Types.func,
-};
-
 WaveSurfer.defaultProps = {
   children: null,
   plugins: [],
