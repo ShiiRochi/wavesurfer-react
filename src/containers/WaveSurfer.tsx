@@ -1,4 +1,3 @@
-import Types from "prop-types";
 import React, { useEffect, useRef, useState } from "react";
 import { WaveSurferParams } from "wavesurfer.js/types/params";
 import { PluginDefinition } from "wavesurfer.js/types/plugin";
