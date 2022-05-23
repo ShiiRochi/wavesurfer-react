@@ -1,6 +1,8 @@
-import WaveSurferFactory from "wavesurfer.js";
+import WaveSurfer from "wavesurfer.js";
 import { WaveSurferParams } from "wavesurfer.js/types/params";
 
-export default function createWavesurfer(options: WaveSurferParams) {
-  return WaveSurferFactory.create(options);
+export default function createWavesurfer(options: WaveSurferParams): WaveSurfer {
+  return WaveSurfer.create(options);
 }
+
+export { WaveSurfer };

@@ -3,22 +3,23 @@ import { WaveSurferParams } from "wavesurfer.js/types/params";
 import { PluginDefinition } from "wavesurfer.js/types/plugin";
 import WaveForm from "../components/WaveForm";
 import WaveSurferContext from "../contexts/WaveSurferContext";
-import createPlugin from "../utils/createPlugin";
-import createWavesurfer from "../utils/createWavesurfer";
-import getDifference from "../utils/getDifference";
+import createWavesurfer, { WaveSurfer as WaveSurferRef } from "../utils/createWavesurfer";
 import getWaveFormOptionsFromProps from "../utils/getWaveFormOptionsFromProps";
+import getDifference from "../utils/getDifference";
+import createPlugin from "../utils/createPlugin";
 
 export interface PluginType {
   plugin: object;
   options: any;
   creator?: string;
 }
-export type WaveSurferRef = WaveSurfer;
+
 export interface WaveSurferProps {
-  children: JSX.Element;
+  children: React.ReactNode;
   plugins: PluginType[];
   onMount: (wavesurferRef: WaveSurferRef) => any;
 }
+
 const WaveSurfer = ({ children, plugins = [], onMount }: WaveSurferProps) => {
   const usedPluginsListCache = useRef<PluginDefinition[]>([]);
   const [waveSurfer, setWaveSurfer] = useState<WaveSurferRef | null>(null);
@@ -60,11 +61,23 @@ const WaveSurfer = ({ children, plugins = [], onMount }: WaveSurferProps) => {
 
     // get timeline and waveform props
     React.Children.forEach(children, (element) => {
-      const { props } = element;
+      if (typeof element !== "object" || element === null || ["string", "number"].includes(typeof element)) {
+        return;
+      }
+
+      // if child does not have either props, or type,
+      // then return
+      if (!("props" in element || "type" in element)) return;
+
+      const props = element.props;
+
+      const elType = element.type;
 
       const { id, ...rest } = props;
+
       let derivedProps = null;
-      if (element?.type === WaveForm) {
+
+      if (elType === WaveForm) {
         derivedProps = getWaveFormOptionsFromProps(rest);
         waveformProps = {
           ...derivedProps,
