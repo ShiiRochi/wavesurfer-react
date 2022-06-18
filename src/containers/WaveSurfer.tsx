@@ -8,11 +8,7 @@ import getWaveFormOptionsFromProps from "../utils/getWaveFormOptionsFromProps";
 import getDifference from "../utils/getDifference";
 import createPlugin from "../utils/createPlugin";
 
-export interface PluginType {
-  plugin: object;
-  options: any;
-  creator?: string;
-}
+import { PluginType } from "../types";
 
 export interface WaveSurferProps {
   children: React.ReactNode;
