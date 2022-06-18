@@ -19,6 +19,12 @@ export interface MarkerProps extends MarkerParams {
 export default function Marker({ onClick, onDrop, onDrag, ...data }: MarkerProps) {
     const ws = useWavesurferContext();
 
+    // TODO: make some kind of useGetLatestWs...
+    const ws$ = useRef(ws);
+    useEffect(() => {
+        ws$.current = ws;
+    }, [ws])
+
     // This is the only legal/official way to identify marker
     // inside wavesurfer markers list and
     // to tie it with Marker component
@@ -43,7 +49,7 @@ export default function Marker({ onClick, onDrop, onDrag, ...data }: MarkerProps
         return () => {
             ws.un("marker-click", handler);
         };
-    }, [ws,onClick]);
+    }, [ws, onClick]);
 
     useEffect(() => {
         if (!ws) return;
@@ -63,7 +69,7 @@ export default function Marker({ onClick, onDrop, onDrag, ...data }: MarkerProps
         return () => {
             ws.un("marker-drag", handler);
         };
-    }, [ws,onDrag]);
+    }, [ws, onDrag]);
 
     useEffect(() => {
         if (!ws) return;
@@ -83,7 +89,7 @@ export default function Marker({ onClick, onDrop, onDrag, ...data }: MarkerProps
         return () => {
             ws.un("marker-drop", handler);
         };
-    }, [ws,onDrop]);
+    }, [ws, onDrop]);
 
     useEffect(() => {
         if (!ws) return;
@@ -128,12 +134,14 @@ export default function Marker({ onClick, onDrop, onDrag, ...data }: MarkerProps
     // as far as they are working via wavesurfer instance. That's making'em
     // different from Regions in the way of working.
     useEffect(() => () => {
-        if (!ws || !markerEl.current) return;
+        if (!ws$.current || !markerEl.current) return;
 
-        const index = ws.markers.markers.findIndex((marker: IMarker) => marker.el === markerEl.current?.el);
+        const index = ws$.current.markers.markers.findIndex((marker: IMarker) => {
+            return marker.el === markerEl.current?.el;
+        });
 
-        ws.markers.remove(index);
-    }, [])
+        ws$.current.markers.remove(index);
+   }, [])
 
     return null;
 }
