@@ -4,3 +4,5 @@ demo
 dist
 npm-debug.log
 debug.log
+
+__dev__
