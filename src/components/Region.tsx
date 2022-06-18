@@ -1,11 +1,11 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Region as RegionWS,
   RegionParams,
 } from "wavesurfer.js/src/plugin/regions";
 import { EventHandler } from "wavesurfer.js/types/util";
-import WaveSurferContext from "../contexts/WaveSurferContext";
 import useRegionEvent from "../hooks/useRegionEvent";
+import useWavesurferContext from "../hooks/useWavesurferContext";
 
 export interface RegionProps extends RegionParams {
   onClick?: EventHandler;
@@ -31,7 +31,7 @@ export const Region = ({
   onUpdateEnd,
   ...props
 }: RegionProps) => {
-  const waveSurfer = useContext(WaveSurferContext);
+  const waveSurfer = useWavesurferContext();
 
   const isRenderedCache = useRef(false);
 

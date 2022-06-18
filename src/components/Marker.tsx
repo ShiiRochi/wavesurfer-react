@@ -1,7 +1,7 @@
-import { useContext, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import {MarkerParams, Marker as IBaseMarker} from "wavesurfer.js/src/plugin/markers";
-import WaveSurferContext from "../contexts/WaveSurferContext";
 import {EventHandler} from "wavesurfer.js/types/util";
+import useWavesurferContext from "../hooks/useWavesurferContext";
 
 export interface IMarker extends IBaseMarker {
     el?: HTMLDivElement;
@@ -17,7 +17,7 @@ export interface MarkerProps extends MarkerParams {
 // TODO: remove boilerplate in useEffects section, try to update useRegionEvent to support
 //  all kinds of event handling within WaveSurfer ecosystem
 export default function Marker({ onClick, onDrop, onDrag, ...data }: MarkerProps) {
-    const ws = useContext(WaveSurferContext);
+    const ws = useWavesurferContext();
 
     // This is the only legal/official way to identify marker
     // inside wavesurfer markers list and
