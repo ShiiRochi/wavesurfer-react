@@ -121,7 +121,15 @@ export default function Marker({ onClick, onDrop, onDrag, ...data }: MarkerProps
         // For enthusiasts, it is possible to deep dive into the process of marker creation and make a PR,
         // that will add full marker update support.
         // https://wavesurfer-js.org/api/file/src/plugin/markers/index.js.html
-        //
+
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        const marker = ws.markers.markers.find(mark => mark.el === markerEl.current?.el);
+
+        if (!marker) return;
+
+        marker.time = data.time;
+
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         ws.markers._updateMarkerPosition({
