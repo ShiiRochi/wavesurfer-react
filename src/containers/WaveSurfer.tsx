@@ -1,66 +1,26 @@
-import React, { useEffect, useRef, useState } from "react";
-import { WaveSurferParams } from "wavesurfer.js/types/params";
-import { PluginDefinition } from "wavesurfer.js/types/plugin";
+import React, { Children, useMemo } from "react";
 import WaveForm from "../components/WaveForm";
 import WaveSurferContext from "../contexts/WaveSurferContext";
-import createWavesurfer, { WaveSurfer as WaveSurferRef } from "../utils/createWavesurfer";
+import { WaveSurfer as WaveSurferRef } from "../utils/createWavesurfer";
 import getWaveFormOptionsFromProps from "../utils/getWaveFormOptionsFromProps";
-import getDifference from "../utils/getDifference";
-import createPlugin from "../utils/createPlugin";
+import useWavesurfer from "../hooks/useWavesurfer";
 
-export interface PluginType {
-  plugin: object;
-  options: any;
-  creator?: string;
-}
+import { PluginType } from "../types";
 
 export interface WaveSurferProps {
   children: React.ReactNode;
   plugins: PluginType[];
-  onMount: (wavesurferRef: WaveSurferRef) => any;
+  onMount: (wavesurferRef: null | WaveSurferRef) => any;
 }
 
-const WaveSurfer = ({ children, plugins = [], onMount }: WaveSurferProps) => {
-  const usedPluginsListCache = useRef<PluginDefinition[]>([]);
-  const [waveSurfer, setWaveSurfer] = useState<WaveSurferRef | null>(null);
+// TODO: research on ref usage
+const WaveSurfer = ({ children, plugins = [], onMount, ...props }: WaveSurferProps) => {
+  // Search for WaveForm component props
+  // it's making new logic compatible with old one
+  const UNSTABLE_waveFormProps = useMemo(() => {
+    let waveformProps = {};
 
-  useEffect(() => {
-    return () => {
-      if (waveSurfer) {
-        waveSurfer.destroy();
-        setWaveSurfer(null);
-      }
-    };
-  }, []);
-
-  useEffect(() => {
-    if (waveSurfer) {
-      const nextPluginsMap = plugins.map(createPlugin);
-
-      const { disabled, enabled } = getDifference(
-        usedPluginsListCache.current,
-        nextPluginsMap
-      );
-
-      usedPluginsListCache.current = nextPluginsMap;
-
-      disabled.forEach((plugin) => {
-        if (!plugin.name) return;
-        waveSurfer.destroyPlugin(plugin.name);
-      });
-
-      enabled.forEach((plugin) => {
-        if (!plugin.name) return;
-        waveSurfer.addPlugin(plugin).initPlugin(plugin.name);
-      });
-    }
-  }, [plugins]);
-
-  useEffect(() => {
-    let waveformProps: WaveSurferParams | null = null;
-
-    // get timeline and waveform props
-    React.Children.forEach(children, (element) => {
+    Children.forEach(children, (element: React.ReactNode) => {
       if (typeof element !== "object" || element === null || ["string", "number"].includes(typeof element)) {
         return;
       }
@@ -73,50 +33,33 @@ const WaveSurfer = ({ children, plugins = [], onMount }: WaveSurferProps) => {
 
       const elType = element.type;
 
-      const { id, ...rest } = props;
-
-      let derivedProps = null;
-
       if (elType === WaveForm) {
-        derivedProps = getWaveFormOptionsFromProps(rest);
+        const { id, ...rest } = props;
+
+        waveformProps = getWaveFormOptionsFromProps(rest);
+
         waveformProps = {
-          ...derivedProps,
+          ...waveformProps,
           container: "#" + id,
         };
       }
-    });
+    })
 
-    // construct initial plugins list
-    let pluginsList: PluginDefinition[] = [];
+    return waveformProps;
+  }, [children]);
 
-    if (plugins) {
-      pluginsList = plugins.map(createPlugin);
-    }
-
-    usedPluginsListCache.current = pluginsList;
-
-    if (waveSurfer) {
-      waveSurfer.destroy();
-      setWaveSurfer(null);
-    }
-
-    const ws = createWavesurfer({
-      container: "wavesurfer",
-      ...(typeof waveformProps == "object" ? waveformProps : {}),
-      plugins: pluginsList,
-    });
-
-    setWaveSurfer(ws);
-
-    if (onMount) {
-      onMount(ws);
-    }
-  }, []);
+  const wavesurfer = useWavesurfer({
+    plugins,
+    // TODO: remove in future
+    onMount,
+    ...props,
+    ...UNSTABLE_waveFormProps,
+  });
 
   return (
-    <WaveSurferContext.Provider value={waveSurfer}>
-      {children}
-    </WaveSurferContext.Provider>
+      <WaveSurferContext.Provider value={wavesurfer}>
+        {children}
+      </WaveSurferContext.Provider>
   );
 };
 
