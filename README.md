@@ -4,34 +4,30 @@ A simple wrapper around an awesome library called [wavesurfer.js](https://wavesu
 The purpose of the package is to provide an abstraction over wavesurfer.js API 
 and to do it as close to react style of doing things as its maintainer(-s) can provide.
 
-```js
-// Plugins prop format
-// now you have to pass always an array of objects, where each can contain three properties,
-// only one of them is required - plugin;
-// plugin property is a plugin class, imported from wavesurfer.js
-// example:
-import RegionsPlugin from "wavesurfer.js/dist/plugin/wavesurfer.regions.min";
-import TimelinePlugin from "wavesurfer.js/dist/plugin/wavesurfer.timeline.min";
-import CursorPlugin from "wavesurfer.js/dist/plugin/wavesurfer.cursor.min";
+**LiveDemo:**
 
-const plugins = [
-  {
-    plugin: RegionsPlugin,
-    options: { dragSelection: true }
-  },
-  {
-    plugin: TimelinePlugin,
-    options: {
-      container: "#timeline"
-    }
-  },
-  {
-    plugin: CursorPlugin
-  }
-];
-```
+[<img src="https://img.shields.io/badge/Codesandbox-040404?style=for-the-badge&logo=codesandbox&logoColor=DBDBDB">](https://codesandbox.io/s/wavesurfer-react-20-gqvb6)
+
+# Table of Contents
+
+- [Wavesurfer React](#wavesurfer-react)
+   * [User Guide](#user-guide)
+      + [Components](#components)
+         - [WaveSurfer](#wavesurfer)
+         - [WaveForm](#waveform)
+         - [Region](#region)
+         - [Marker](#marker)
+      + [Hooks](#hooks)
+         - [useWavesurfer](#usewavesurfer)
+         - [useRegionEvent](#useregionevent)
+         - [useWaveSurferContext](#usewavesurfercontext)
+   * [Known Issues and Workarounds](#known-issues-and-workarounds)
+   * [Roadmap](#roadmap)
+
+<br />
 
 ## User Guide
+
 ### Components
 Package provides the following set of components:
 1. WaveSurfer
@@ -48,19 +44,35 @@ It accepts the following props set:
 ##### Plugins Prop
 
 It is a list of plugins to use by WaveSurfer and has the following format:
-```js
+```jsx
 import { WaveSurfer } from 'wavesurfer-react';
-import MyCustomPlugin from 'my-custom-plugin-path'; 
+import RegionsPlugin from "wavesurfer.js/dist/plugin/wavesurfer.regions.min";
+import TimelinePlugin from "wavesurfer.js/dist/plugin/wavesurfer.timeline.min";
+import CursorPlugin from "wavesurfer.js/dist/plugin/wavesurfer.cursor.min";
+import MyCustomPlugin from 'my-custom-plugin-path';
 
-const myPlugin = {
-    plugin: MyCustomPlugin,
-    options: {
-        someGreatOption: 'someGreatValue'
-    },
-    creator: 'myCustomCreate'
-};
-
-const plugins = [myPlugin];
+const plugins = [
+   {
+      plugin: RegionsPlugin,
+      options: { dragSelection: true }
+   },
+   {
+      plugin: TimelinePlugin,
+      options: {
+         container: "#timeline"
+      }
+   },
+   {
+      plugin: CursorPlugin
+   },
+   {
+      plugin: MyCustomPlugin,
+      options: {
+         someGreatOption: 'someGreatValue'
+      },
+      creator: 'myCustomCreate'
+   }
+];
 
 <WaveSurfer plugins={plugins} />
 ```
@@ -72,7 +84,6 @@ otherwise added to wavesurfer plugins list and immediately initialized.
 ##### onMount prop
 It is a function, that is called after WaveSurfer instance has been mounted.  
 It has only one argument - WaveSurfer instance.
-
 
 #### WaveForm
 It is used to configure WaveForm.
@@ -98,7 +109,7 @@ It accepts the following props:
 8. onUpdate - is called on each region's options update
 9. onUpdateEnd - is called when dragging or resizing are finished
 
-Rest passed props are passed as region's data into wavesurfer.
+Rest given props are passed as region's data into wavesurfer.
 
 #### Marker
 Can be used to imperatively control markers.
@@ -111,20 +122,38 @@ It accepts the following props:
 
 Rest passed props are used as marker's data
 
-## Known Issues and Workaround
+### Hooks
+
+Package provides the following set of hooks:
+1. useWavesurfer
+2. useRegionEvent
+3. useWaveSurferContext
+
+#### useWavesurfer
+This hook is used inside WaveSurfer and its purpose is to create wavesurfer instance and return it.  
+It also handles a task of creating and destroying wavesurfer plugins, after `plugins` prop update detection.
+
+You can use it standalone to create you own (more specific) wavesurfer component that will handle more than a component that is provided out-of-the-box.
+
+#### useRegionEvent
+Is used inside Region component to subscribe to region related events. 
+Can be used by developers, if they wanna to, inside a HOC-like component over `Region` component 
+that is provided by the package or any other component, that is rendered inside `WaveSurfer` component, 
+but for the latter task you will have to get region instance first.
+
+#### useWaveSurferContext
+Is used inside `Region` component to get `wavesurfer` instance. Can be used inside any custom component you will create and render within the borders of `WaveSurfer` component.
+
+## Known Issues and Workarounds
 1. Issues with regions synchronization when using redux and `Region` component. 
    Try to not hard-bind redux-state with wavesurfer-react too tight or use an instance of wavesurfer to operate regions. 
 2. [#2417: markers drag handlers not initialized with empty markers array in initial config](https://github.com/katspaugh/wavesurfer.js/issues/2417). Workaround is also presented there (and in demo link). You can use `onMount` to instantly clear artificial markers.
 
 
-## Demo
-You can see how this package is intended to be used 
-[here](https://codesandbox.io/s/wavesurfer-react-20-gqvb6?from-embed)
-
 ## Roadmap
  - [x] Easy plugin add and remove after mount*
  - [x] Typings: **PropTypes** vs Flow vs TypeScript
  - [x] TypeScript is coming, maybe... 
- - [ ] Reduce amount of spelling mistakes in readme. 
+ - [x] Reduce amount of spelling mistakes in readme. 
 
 P.S. Tasks that are marked with start are in theory possible.
