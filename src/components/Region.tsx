@@ -88,9 +88,9 @@ export const Region = ({
 
   useRegionEvent(regionRef, "click", onClick);
 
-  useRegionEvent(regionRef, "over", onOver);
+  useRegionEvent(regionRef, "mouseenter", onOver);
 
-  useRegionEvent(regionRef, "leave", onLeave);
+  useRegionEvent(regionRef, "mouseleave", onLeave);
 
   useRegionEvent(regionRef, "dblclick", onDoubleClick);
 
