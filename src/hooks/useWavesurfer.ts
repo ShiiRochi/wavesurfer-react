@@ -4,8 +4,9 @@ import createWavesurfer, {WaveSurfer as WaveSurferRef, WaveSurfer} from "../util
 import createPlugin from "../utils/createPlugin";
 import getDifference from "../utils/getDifference";
 import { PluginType } from "../types";
+import { WaveSurferParams } from "wavesurfer.js/types/params";
 
-type UseWaveSurferParams = {
+type UseWaveSurferParams = Omit<WaveSurferParams, "plugins" | "container"> & {
     container?: string | HTMLElement,
     plugins: PluginType[],
     onMount: (wavesurferRef: null | WaveSurferRef) => any
@@ -42,10 +43,6 @@ export default function useWavesurfer({ container, plugins = [], onMount, ...pro
         };
     }, [container]);
 
-    // TODO: update waveform appearance
-    // useEffect(() => {}, [props]);
-
-    // TODO: think about whether its place is this hook?
     useEffect(() => {
         if (wavesurfer) {
             const nextPluginsMap = plugins.map(createPlugin);
@@ -68,6 +65,15 @@ export default function useWavesurfer({ container, plugins = [], onMount, ...pro
             });
         }
     }, [plugins]);
+
+    useEffect(() => {
+        if (!wavesurfer) return;
+
+        props.backgroundColor && wavesurfer.setBackgroundColor(props.backgroundColor);
+        props.progressColor && wavesurfer.setProgressColor(props.progressColor);
+        props.cursorColor && wavesurfer.setCursorColor(props.cursorColor);
+        props.waveColor && wavesurfer.setWaveColor(props.waveColor);
+    }, [props.backgroundColor, props.progressColor, props.cursorColor, props.waveColor])
 
     return wavesurfer;
 }
