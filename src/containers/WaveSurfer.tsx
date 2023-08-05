@@ -10,7 +10,7 @@ import { PluginType } from "../types";
 export interface WaveSurferProps {
   children: React.ReactNode;
   plugins: PluginType[];
-  onMount: (wavesurferRef: null | WaveSurferRef) => any;
+  onMount: (wavesurferRef: null | WaveSurferRef) => void;
 }
 
 // TODO: research on ref usage
@@ -25,9 +25,8 @@ const WaveSurfer = ({ children, plugins = [], onMount, ...props }: WaveSurferPro
         return;
       }
 
-      // if child does not have either props, or type,
-      // then return
-      if (!("props" in element || "type" in element)) return;
+      // return if child does not have either props, or type
+      if (!("props" in element && "type" in element)) return;
 
       const props = element.props;
 
