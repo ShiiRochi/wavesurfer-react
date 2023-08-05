@@ -6,6 +6,7 @@ import getWaveFormOptionsFromProps from "../utils/getWaveFormOptionsFromProps";
 import useWavesurfer from "../hooks/useWavesurfer";
 
 import { PluginType } from "../types";
+import isReactElement from "../utils/isReactElement";
 
 export interface WaveSurferProps {
   children: React.ReactNode;
@@ -26,16 +27,14 @@ const WaveSurfer = ({ children, plugins = [], onMount, ...props }: WaveSurferPro
       }
 
       // return if child does not have either props, or type
-      if (!("props" in element && "type" in element)) return;
+      if (!isReactElement(element)) return;
 
-      const props = element.props;
-
-      const elType = element.type;
+      const { props, type: elType } = element;
 
       if (elType === WaveForm) {
-        const { id, ...rest } = props;
+        const { id } = props;
 
-        waveformProps = getWaveFormOptionsFromProps(rest);
+        waveformProps = getWaveFormOptionsFromProps(props);
 
         waveformProps = {
           ...waveformProps,
