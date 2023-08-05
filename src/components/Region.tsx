@@ -1,11 +1,9 @@
 import { useEffect, useRef, useState } from "react";
-import {
-  Region as RegionWS,
-  RegionParams,
-} from "wavesurfer.js/src/plugin/regions";
+import { Region as RegionWS, RegionParams } from "wavesurfer.js/src/plugin/regions";
 import { EventHandler } from "wavesurfer.js/types/util";
 import useRegionEvent from "../hooks/useRegionEvent";
 import useWavesurferContext from "../hooks/useWavesurferContext";
+import { UpdatableRegionProps } from "../constants/updatableRegionProps";
 
 export interface RegionProps extends RegionParams {
   onClick?: EventHandler;
@@ -39,34 +37,28 @@ export const Region = ({
 
   useEffect(() => {
     return () => {
-      if (regionRef) {
-        regionRef.remove();
-      }
+      regionRef?.remove();
     };
   }, [regionRef]);
 
-  // TODO: may need some improvements
   useEffect(
     () => {
-      if (regionRef) {
-        const update = UpdatableRegionProps.reduce<RegionParams>(
-          (result, prop) => {
-            if (regionRef[prop] !== props[prop]) {
-              return {
-                ...result,
-                [prop]: props[prop],
-              };
-            }
+      // If there is a regionRef, then process update on any props update
+      regionRef?.update(UpdatableRegionProps.reduce<RegionParams>(
+        (result, prop) => {
+          if (regionRef[prop] !== props[prop]) {
+            return {
+              ...result,
+              [prop]: props[prop],
+            };
+          }
 
-            return result;
-          },
-          { id: props.id }
-        );
-
-        regionRef.update(update);
-      }
+          return result;
+        },
+        { id: props.id }
+      ));
     },
-    UpdatableRegionProps.map((prop) => props[prop as keyof RegionParams])
+    UpdatableRegionProps.map((prop) => props[prop])
   );
 
   useEffect(() => {
@@ -108,37 +100,3 @@ export const Region = ({
 };
 
 export default Region;
-
-const UpdatableRegionProps: [
-  "start",
-  "end",
-  "loop",
-  "color",
-  "handleStyle",
-  "resize",
-  "drag",
-  "drag",
-  "end",
-  "handleStyle",
-  "id",
-  "loop",
-  "preventContextMenu",
-  "resize",
-  "start"
-] = [
-  "start",
-  "end",
-  "loop",
-  "color",
-  "handleStyle",
-  "resize",
-  "drag",
-  "drag",
-  "end",
-  "handleStyle",
-  "id",
-  "loop",
-  "preventContextMenu",
-  "resize",
-  "start",
-];
