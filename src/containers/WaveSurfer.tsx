@@ -7,15 +7,17 @@ import useWavesurfer from "../hooks/useWavesurfer";
 
 import { PluginType } from "../types";
 import isReactElement from "../utils/isReactElement";
+import { GenericPlugin } from "wavesurfer.js/dist/base-plugin";
 
-export interface WaveSurferProps {
+export interface WaveSurferProps<GPlug extends GenericPlugin> {
   children: React.ReactNode;
-  plugins: PluginType[];
+  plugins: PluginType<GPlug>[];
   onMount: (wavesurferRef: null | WaveSurferRef) => void;
 }
 
+
 // TODO: research on ref usage
-const WaveSurfer = ({ children, plugins = [], onMount, ...props }: WaveSurferProps) => {
+function WaveSurfer<GPlug extends GenericPlugin>({ children, plugins = [], onMount, ...props }: WaveSurferProps<GPlug>) {
   // Search for WaveForm component props
   // it's making new logic compatible with old one
   const UNSTABLE_waveFormProps = useMemo(() => {
@@ -38,10 +40,10 @@ const WaveSurfer = ({ children, plugins = [], onMount, ...props }: WaveSurferPro
 
         waveformProps = {
           ...waveformProps,
-          container: "#" + id,
+          container: "#" + id
         };
       }
-    })
+    });
 
     return waveformProps;
   }, [children]);
@@ -51,15 +53,15 @@ const WaveSurfer = ({ children, plugins = [], onMount, ...props }: WaveSurferPro
     // TODO: remove in future
     onMount,
     ...props,
-    ...UNSTABLE_waveFormProps,
+    ...UNSTABLE_waveFormProps
   });
 
   return (
-      <WaveSurferContext.Provider value={wavesurfer}>
-        {children}
-      </WaveSurferContext.Provider>
+    <WaveSurferContext.Provider value={wavesurfer}>
+      {children}
+    </WaveSurferContext.Provider>
   );
-};
+}
 
 WaveSurfer.defaultProps = {
   children: null,
