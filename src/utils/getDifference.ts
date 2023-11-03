@@ -1,15 +1,14 @@
-import { PluginDefinition } from "wavesurfer.js/types/plugin";
+import { GenericPlugin } from "wavesurfer.js/dist/base-plugin";
 
-const getDifference = (arr1: PluginDefinition[], arr2: PluginDefinition[]) => {
+const getDifference = <GPlug extends GenericPlugin>(arr1: GPlug[], arr2: GPlug[]) => {
   const nextArr1 = [...arr1];
   const nextArr2 = [...arr2];
 
-  const disabled = nextArr1.filter(item => nextArr2.findIndex((nextItem) => nextItem.name === item.name) === -1);
+  const disabled = nextArr1.filter(item => nextArr2.findIndex((nextItem) => nextItem === item) === -1);
 
-  const enabled = nextArr2.filter(item => nextArr1.findIndex(nextItem => nextItem.name === item.name) === -1);
+  const enabled = nextArr2.filter(item => nextArr1.findIndex(nextItem => nextItem === item) === -1);
 
   return { disabled, enabled };
-  // map arr2 via reduce and remove each item, which name exists in arr1
 };
 
 export default getDifference;
