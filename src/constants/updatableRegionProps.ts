@@ -1,17 +1,10 @@
 export const UpdatableRegionProps = [
+  "id",
   "start",
   "end",
-  "loop",
+  "drag",
+  "resize",
   "color",
-  "handleStyle",
-  "resize",
-  "drag",
-  "drag",
-  "end",
-  "handleStyle",
-  "id",
-  "loop",
-  "preventContextMenu",
-  "resize",
-  "start"
+  "content",
+  "channelIdx"
 ] as const;
