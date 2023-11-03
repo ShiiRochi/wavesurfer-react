@@ -1,22 +1,25 @@
 import { useEffect, useRef, useState } from "react";
-import { Region as RegionWS, RegionParams } from "wavesurfer.js/src/plugin/regions";
-import { EventHandler } from "wavesurfer.js/types/util";
+import { Region as RegionWS, RegionParams, RegionsPluginEvents } from "wavesurfer.js/dist/plugins/regions";
 import useRegionEvent from "../hooks/useRegionEvent";
 import useWavesurferContext from "../hooks/useWavesurferContext";
 import { UpdatableRegionProps } from "../constants/updatableRegionProps";
+import { EventListener } from "../types";
+
+type RegionEventListener = EventListener<RegionsPluginEvents, keyof RegionsPluginEvents>;
 
 export interface RegionProps extends RegionParams {
-  onClick?: EventHandler;
-  onOver?: EventHandler;
-  onLeave?: EventHandler;
-  onDoubleClick?: EventHandler;
-  onIn?: EventHandler;
-  onOut?: EventHandler;
-  onRemove?: EventHandler;
-  onUpdate?: EventHandler;
-  onUpdateEnd?: EventHandler;
+  onClick?: RegionEventListener;
+  onOver?: RegionEventListener;
+  onLeave?: RegionEventListener;
+  onDoubleClick?: RegionEventListener;
+  onIn?: RegionEventListener;
+  onOut?: RegionEventListener;
+  onRemove?: RegionEventListener;
+  onUpdate?: RegionEventListener;
+  onUpdateEnd?: RegionEventListener;
   id: string;
 }
+
 export const Region = ({
   onOver,
   onLeave,
@@ -44,7 +47,7 @@ export const Region = ({
   useEffect(
     () => {
       // If there is a regionRef, then process update on any props update
-      regionRef?.update(UpdatableRegionProps.reduce<RegionParams>(
+      regionRef?.setOptions(UpdatableRegionProps.reduce(
         (result, prop) => {
           if (regionRef[prop] !== props[prop]) {
             return {
@@ -55,7 +58,7 @@ export const Region = ({
 
           return result;
         },
-        { id: props.id }
+        { id: props.id } as Omit<RegionParams, 'minLength' | 'maxLength'>
       ));
     },
     UpdatableRegionProps.map((prop) => props[prop])
