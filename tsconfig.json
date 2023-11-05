@@ -2,28 +2,27 @@
   "compilerOptions": {
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "target": "es2022",
+    "target": "esnext",
     "jsx": "react",
     "allowJs": true,
     "resolveJsonModule": true,
     "strict": true,
     "allowSyntheticDefaultImports": true,
-    "moduleDetection": "force",
     "noUncheckedIndexedAccess": true,
     "module": "esnext",
     "moduleResolution": "node",
     "outDir": "dist",
-    "sourceMap": true,
-    "lib": ["es2022", "dom", "dom.iterable"],
+    "sourceMap": false,
     "declaration": true
   },
   "include": [
-    "src"
+    "src/**/*"
   ],
   "exclude": [
     "src/**/*.spec.tsx",
     "src/setupTests.tsx",
     "src/stories",
-    "src/*.ts"
+    "dist",
+    "node_modules"
   ]
 }
