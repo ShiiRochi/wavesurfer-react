@@ -3,7 +3,7 @@ import { Region, RegionEvents } from "wavesurfer.js/dist/plugins/regions";
 
 import { EventListener } from "../types";
 
-type RegionEventListener = (region: Region, ...rest: Parameters<EventListener<RegionEvents, keyof RegionEvents>>) => void;
+export type RegionEventListener = (region: Region, ...rest: Parameters<EventListener<RegionEvents, keyof RegionEvents>>) => void;
 
 function useRegionEvent<K extends keyof RegionEvents>(
   ref: Region | null | undefined,
