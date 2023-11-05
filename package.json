@@ -14,7 +14,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "prebuild": "rimraf dist/*",
     "build": "tsc",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "build:dev": "npm run build && cd ./demo/src && rimraf wavesurfer-react/* && cd .. && cd .. && cp -r ./dist/ ./demo/src/wavesurfer-react/",
+    "start:demo": "cd ./demo && npm run start"
   },
   "peerDependencies": {
     "wavesurfer.js": "^7.4.2"
