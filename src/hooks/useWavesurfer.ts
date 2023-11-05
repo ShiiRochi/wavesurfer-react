@@ -11,21 +11,36 @@ type UseWaveSurferParams<GPlug extends GenericPlugin> = {
     onMount: (wavesurferRef: null | WaveSurferRef) => any
 };
 
+function createPlugins<GPlug extends GenericPlugin>(curr: GPlug[], next: PluginType<GPlug>[]): GPlug[] {
+    const result: GPlug[] = [];
+
+    const stack = [...next];
+
+    while (stack.length >= 1) {
+        const node = stack.shift()!;
+
+        // @ts-expect-error currently it is okay
+        const currPluginInstanceIndex = curr.findIndex(plug => plug instanceof node.plugin);
+
+        if (currPluginInstanceIndex !== -1) {
+            result.push(curr[currPluginInstanceIndex] as GPlug);
+        } else {
+            result.push(createPlugin(node));
+        }
+    }
+
+    return result;
+}
+
 export default function useWavesurfer<GPlug extends GenericPlugin>({ container, plugins = [], onMount, ...props }: UseWaveSurferParams<GPlug>) {
-    const usedPluginsListCache = useRef<GPlug[]>([]);
+    const [pluginsMap, setPluginsMap] = useState<GPlug[]>([]);
+
     const [wavesurfer, setWavesurfer] = useState<WaveSurfer | null>(null);
 
     useEffect(() => {
         if (!container) return;
 
-        let _plugins: GPlug[] = [];
-        // construct initial plugins list
-
-        if (plugins) {
-            _plugins = plugins.map(createPlugin);
-        }
-
-        usedPluginsListCache.current = _plugins;
+        const _plugins: GPlug[] = createPlugins(pluginsMap, plugins);
 
         const ws = createWavesurfer({
             container,
@@ -35,6 +50,7 @@ export default function useWavesurfer<GPlug extends GenericPlugin>({ container, 
 
         onMount?.(ws);
 
+        setPluginsMap(_plugins);
         setWavesurfer(ws);
 
         return () => {
@@ -42,32 +58,29 @@ export default function useWavesurfer<GPlug extends GenericPlugin>({ container, 
         };
     }, [container]);
 
-    // TODO: update waveform appearance
-    // useEffect(() => {}, [props]);
-
-    // TODO: think about whether its place is this hook?
     useEffect(() => {
         if (wavesurfer) {
-            const nextPluginsMap = plugins.map(p => createPlugin(p));
+            const _plugins: GPlug[] = createPlugins(pluginsMap, plugins);
 
             const { disabled, enabled } = getDifference(
-                usedPluginsListCache.current,
-                nextPluginsMap
+              pluginsMap,
+              _plugins
             );
 
-            usedPluginsListCache.current = nextPluginsMap;
-
-            const activePlugins = wavesurfer?.getActivePlugins();
-
-
             // destroy plugin, wavesurfer self removes it from plugin array
-            disabled
-              .map(plug => activePlugins?.find(p => p === plug))
-              .forEach(plug => {plug?.destroy();})
+            disabled.forEach(plug => plug.destroy())
 
-            enabled.forEach((plugin) => wavesurfer?.registerPlugin(plugin));
+            enabled.forEach((plugin) => {
+                if (pluginsMap.findIndex(pl => pl === plugin) !== -1) return;
+
+                console.log('register plugin', plugin);
+
+                wavesurfer?.registerPlugin(plugin);
+            });
+
+            setPluginsMap(_plugins);
         }
     }, [plugins]);
 
-    return wavesurfer;
+    return [wavesurfer as WaveSurfer, pluginsMap] as const;
 }
