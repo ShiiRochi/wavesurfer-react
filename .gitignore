@@ -1,6 +1,5 @@
 .idea
 /node_modules/
-demo
 dist
 npm-debug.log
 debug.log
