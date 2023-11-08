@@ -149,8 +149,7 @@ Issues with regions synchronization when using redux and `Region` component.
 Try to not hard-bind redux-state with wavesurfer-react too tight or use an instance of wavesurfer to operate regions.
 
 ### Timeline issues
-Timeline is not visible after removing it from plugins array 
-and adding again. I hope it is a temporal issue with the original package.
+[**FIXED**](https://github.com/katspaugh/wavesurfer.js/pull/3327/files): Timeline is not visible after removing it from plugins array and adding again. I hope it is a temporal issue with the original package.
 Comments related to this issue are:
 [Comment #1](https://github.com/ShiiRochi/wavesurfer-react/issues/72#issuecomment-1793807986)  
 [Comment #2](https://github.com/ShiiRochi/wavesurfer-react/issues/72#issuecomment-1793968082)  
