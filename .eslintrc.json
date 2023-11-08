@@ -22,6 +22,7 @@
     ],
     "rules": {
     },
+    "ignorePatterns": ["demo"],
     "settings": {
         "react": {
             "version": "detect"
