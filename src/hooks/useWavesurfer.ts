@@ -5,27 +5,29 @@ import createPlugin from "../utils/createPlugin";
 import getDifference from "../utils/getDifference";
 import { PluginType } from "../types";
 
-type UseWaveSurferParams<GPlug extends GenericPlugin> = {
+export type UseWaveSurferParams<GPlug extends GenericPlugin> = {
     container?: string | HTMLElement,
     plugins: PluginType<GPlug>[],
     onMount: (wavesurferRef: null | WaveSurferRef) => any
 };
 
-function createPlugins<GPlug extends GenericPlugin>(curr: GPlug[], next: PluginType<GPlug>[]): GPlug[] {
-    const result: GPlug[] = [];
+export type PluginDictionary<GPlug extends GenericPlugin> = Record<string, GPlug>;
 
-    const stack = [...next];
+
+function createPluginsMap<GPlug extends GenericPlugin>(curr: PluginDictionary<GPlug>, plugins: PluginType<GPlug>[]): PluginDictionary<GPlug> {
+    const result: PluginDictionary<GPlug> = {};
+
+    const stack = [...plugins];
 
     while (stack.length >= 1) {
         const node = stack.shift()!;
 
-        // @ts-expect-error currently it is okay
-        const currPluginInstanceIndex = curr.findIndex(plug => plug instanceof node.plugin);
+        const hasThisPluginAlready = !!curr[node.key];
 
-        if (currPluginInstanceIndex !== -1) {
-            result.push(curr[currPluginInstanceIndex] as GPlug);
+        if (hasThisPluginAlready) {
+            result[node.key] = curr[node.key]!;
         } else {
-            result.push(createPlugin(node));
+            result[node.key] = createPlugin(node);
         }
     }
 
@@ -33,19 +35,23 @@ function createPlugins<GPlug extends GenericPlugin>(curr: GPlug[], next: PluginT
 }
 
 export default function useWavesurfer<GPlug extends GenericPlugin>({ container, plugins = [], onMount, ...props }: UseWaveSurferParams<GPlug>) {
-    const [pluginsMap, setPluginsMap] = useState<GPlug[]>([]);
+    const [pluginsMap, setPluginsMap] = useState<PluginDictionary<GPlug>>({});
+    // is used to keep track of initialized plugins
+    const initialized$ = useRef<string[]>([]);
 
     const [wavesurfer, setWavesurfer] = useState<WaveSurfer | null>(null);
 
     useEffect(() => {
         if (!container) return;
 
-        const _plugins: GPlug[] = createPlugins(pluginsMap, plugins);
+        const _plugins = createPluginsMap(pluginsMap, plugins);
+
+        initialized$.current = Object.keys(_plugins);
 
         const ws = createWavesurfer({
             container,
             ...props,
-            plugins: _plugins,
+            plugins: Object.values(_plugins),
         })
 
         onMount?.(ws);
@@ -60,7 +66,7 @@ export default function useWavesurfer<GPlug extends GenericPlugin>({ container, 
 
     useEffect(() => {
         if (wavesurfer) {
-            const _plugins: GPlug[] = createPlugins(pluginsMap, plugins);
+            const _plugins = createPluginsMap(pluginsMap, plugins);
 
             const { disabled, enabled } = getDifference(
               pluginsMap,
@@ -68,19 +74,25 @@ export default function useWavesurfer<GPlug extends GenericPlugin>({ container, 
             );
 
             // destroy plugin, wavesurfer self removes it from plugin array
-            disabled.forEach(plug => plug.destroy())
+            Object.keys(disabled).forEach(plugKey => {
+                disabled[plugKey]!.destroy();
+            })
 
-            enabled.forEach((plugin) => {
-                if (pluginsMap.findIndex(pl => pl === plugin) !== -1) return;
+            Object.keys(enabled).forEach((pluginKey) => {
+                // do not initialize plugin under the same key twice or more times
+                if (initialized$.current.includes(pluginKey)) return;
 
-                console.log('register plugin', plugin);
+                console.log('register plugin', pluginKey, enabled[pluginKey]);
 
-                wavesurfer?.registerPlugin(plugin);
+                wavesurfer?.registerPlugin(enabled[pluginKey]!);
             });
+
+            // register only enabled plugins
+            initialized$.current = Object.keys(enabled);
 
             setPluginsMap(_plugins);
         }
     }, [plugins]);
 
-    return [wavesurfer as WaveSurfer, pluginsMap] as const;
+    return [wavesurfer as WaveSurfer, pluginsMap, Object.values(pluginsMap)] as const;
 }

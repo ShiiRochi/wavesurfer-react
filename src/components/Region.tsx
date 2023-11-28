@@ -30,7 +30,7 @@ export const Region = ({
   onUpdateEnd,
   ...props
 }: RegionProps) => {
-  const [waveSurfer, plugins] = useWavesurferContext()!;
+  const [waveSurfer, ,plugins] = useWavesurferContext()!;
 
   const regionPlug = plugins.find(p => p instanceof RegionsPlugin) as RegionsPlugin | undefined;
 

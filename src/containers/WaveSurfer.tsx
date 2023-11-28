@@ -1,5 +1,5 @@
 import React from "react";
-import WaveSurferContext from "../contexts/WaveSurferContext";
+import WaveSurferContext, { WaveSurferContextValue } from "../contexts/WaveSurferContext";
 import { WaveSurfer as WaveSurferRef } from "../utils/createWavesurfer";
 import useWavesurfer from "../hooks/useWavesurfer";
 

@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import RegionsPlugin, { Region, RegionEvents, RegionsPluginEvents } from "wavesurfer.js/dist/plugins/regions";
+import RegionsPlugin, { RegionsPluginEvents } from "wavesurfer.js/dist/plugins/regions";
 
 import { EventListener } from "../types";
 
