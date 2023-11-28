@@ -16,6 +16,7 @@ and to do it as close to react style of doing things as its maintainer(-s) can p
          - [WaveSurfer](#wavesurfer)
          - [WaveForm](#waveform)
          - [Region](#region)
+         - [Marker](#region)
       + [Hooks](#hooks)
          - [useWavesurfer](#usewavesurfer)
          - [useRegionEvent](#useregionevent)
@@ -45,27 +46,26 @@ It accepts the following props set:
 It is a list of plugins to use by WaveSurfer and has the following format:
 ```jsx
 import { WaveSurfer } from 'wavesurfer-react';
-import RegionsPlugin from "wavesurfer.js/dist/plugin/wavesurfer.regions.min";
-import TimelinePlugin from "wavesurfer.js/dist/plugin/wavesurfer.timeline.min";
-import CursorPlugin from "wavesurfer.js/dist/plugin/wavesurfer.cursor.min";
+import RegionsPlugin from "wavesurfer.js/dist/plugins/regions";
+import TimelinePlugin from "wavesurfer.js/dist/plugins/timeline";
 import MyCustomPlugin from 'my-custom-plugin-path';
 
 const plugins = [
    {
       plugin: RegionsPlugin,
+      key: "regions",
       options: { dragSelection: true }
    },
    {
       plugin: TimelinePlugin,
+      key: "timeline",
       options: {
          container: "#timeline"
       }
    },
    {
-      plugin: CursorPlugin
-   },
-   {
       plugin: MyCustomPlugin,
+      key: "my-custom-plugin",
       options: {
          someGreatOption: 'someGreatValue'
       },
@@ -79,6 +79,8 @@ const plugins = [
 The `plugins` prop is watched inside WaveSurfer.  
 If plugin was disabled (it's not enlisted in `plugins` prop) it will be destroyed, 
 otherwise added to wavesurfer plugins list and immediately initialized.
+
+To correctly track initialized plugins, `key` property is used in item of `plugins` array.
 
 ##### onMount prop
 It is a function, that is called after WaveSurfer instance has been mounted.  
@@ -115,12 +117,17 @@ It accepts the following props:
 
 Rest given props are passed as region's data into wavesurfer.
 
+#### Marker
+Special component using Region under the hood to display only markers.
+Marker await all props of Region except `end` prop.
+
 ### Hooks
 
 Package provides the following set of hooks:
 1. useWavesurfer
 2. useRegionEvent
-3. useWaveSurferContext
+3. useRegionPluginEvent
+4. useWaveSurferContext
 
 #### useWavesurfer
 This hook is used inside WaveSurfer and its purpose is to create wavesurfer instance and return it.  
@@ -129,19 +136,22 @@ It also handles a task of creating and destroying wavesurfer plugins, after `plu
 You can use it standalone to create you own (more specific) wavesurfer component that will handle more than a component that is provided out-of-the-box.
 
 #### useRegionEvent
-Is used inside Region component to subscribe to region related events. 
+Is used inside the `Region` component to subscribe to region-related events. 
 Can be used by developers, if they wanna to, inside a HOC-like component over `Region` component 
 that is provided by the package or any other component, that is rendered inside `WaveSurfer` component, 
 but for the latter task you will have to get region instance first.
 
 #### useRegionPluginEvent
-Is used inside Region component to subscribe to region plugin related events. 
+Is used inside the `Region` component to subscribe to region plugin related events. 
 Can be used by developers, if they wanna to, inside a HOC-like component over `Region` component 
 that is provided by the package or any other component, that is rendered inside `WaveSurfer` component, 
 but for the latter task you will have to get regions plugin instance first.
 
 #### useWaveSurferContext
-Is used inside `Region` component to get `wavesurfer` instance. Can be used inside any custom component you will create and render within the borders of `WaveSurfer` component.
+Returns a tuple of: 
+1. wavesurfer instance, 
+2. mapped object of enabled plugins keyed by the `key` property passed alongside a plugin, 
+3. an array containing these plugins.
 
 ## Known Issues and Workarounds
 ### Regions desynchronization
@@ -154,5 +164,7 @@ Comments related to this issue are:
 [Comment #1](https://github.com/ShiiRochi/wavesurfer-react/issues/72#issuecomment-1793807986)  
 [Comment #2](https://github.com/ShiiRochi/wavesurfer-react/issues/72#issuecomment-1793968082)  
 [Comment #3](https://github.com/ShiiRochi/wavesurfer-react/issues/72#issuecomment-1794293542)
+
+**INFO**: use `wavesurfer.js@^7.4.5` to have this issue fixed
 
 **Solution** to this problem is **to execute** `wavesurfer.setOptions({})`, right after Timeline plugin is added again via `plugins` prop second time and further.

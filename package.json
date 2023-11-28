@@ -21,7 +21,7 @@
   },
   "peerDependencies": {
     "react": "^16 || ^17 || ^18 || ^19",
-    "wavesurfer.js": "^7.4.2"
+    "wavesurfer.js": "^7"
   },
   "devDependencies": {
     "@babel/preset-typescript": "^7.16.7",
