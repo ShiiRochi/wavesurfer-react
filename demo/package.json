@@ -10,7 +10,7 @@
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",
     "styled-components": "^6.1.0",
-    "wavesurfer.js": "^7.4.3",
+    "wavesurfer.js": "^7.4.12",
     "web-vitals": "^2.1.4"
   },
   "scripts": {

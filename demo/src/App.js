@@ -64,10 +64,12 @@ function App() {
   const plugins = useMemo(() => {
     return [
       {
+        key: "regions",
         plugin: RegionsPlugin,
         options: { dragSelection: true }
       },
       timelineVis && {
+        key: "timeline",
         plugin: TimelinePlugin,
         options: {
           container: "#timeline"
