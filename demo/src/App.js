@@ -6,7 +6,7 @@ import React, {
   useMemo
 } from "react";
 import styled from "styled-components";
-import { WaveSurfer, WaveForm, Region } from "./wavesurfer-react";
+import { WaveSurfer, WaveForm, Region, Marker } from "./wavesurfer-react";
 import "./App.css";
 import RegionsPlugin from "wavesurfer.js/dist/plugins/regions";
 import TimelinePlugin from "wavesurfer.js/dist/plugins/timeline";
@@ -89,12 +89,6 @@ function App() {
           }
         }
       }
-      // {
-      //   plugin: MarkersPlugin,
-      //   options: {
-      //     markers: [{ draggable: true }]
-      //   }
-      // }
     ].filter(Boolean);
   }, [timelineVis]);
 
@@ -283,6 +277,11 @@ function App() {
     console.log(smth);
   }, []);
 
+  const handleMarkerUpdate = useCallback((marker, smth) => {
+    console.log("region-update-end --> marker:", marker);
+    console.log(smth);
+  }, []);
+
   const setZoom50 = () => {
     wavesurferRef.current.zoom(50);
   };
@@ -296,6 +295,15 @@ function App() {
               onUpdateEnd={handleRegionUpdate}
               key={regionProps.id}
               {...regionProps}
+            />
+          ))}
+          {isLoaded && markers.map(markerProps => (
+            <Marker
+              onUpdateEnd={handleMarkerUpdate}
+              start={markerProps.time}
+              color={markerProps.color}
+              content={markerProps.label}
+              drag={markerProps.draggable}
             />
           ))}
         </WaveForm>
