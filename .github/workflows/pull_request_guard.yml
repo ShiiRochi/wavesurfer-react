@@ -1,0 +1,28 @@
+name: Pull Request Guard
+on: [pull_request]
+
+jobs:
+  eslint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: ./.github/workflows/yarn
+
+      - uses: Maggi64/eslint-plus-action@master
+        with:
+          npmInstall: false
+
+  build:
+    needs: eslint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: ./.github/workflows/yarn
+
+      - name: Install Peer
+        run: yarn add wavesurfer.js
+
+      - name: Build
+        run: yarn build

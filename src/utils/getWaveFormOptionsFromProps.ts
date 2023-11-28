@@ -1,58 +1,35 @@
-import { WaveSurferParams } from "wavesurfer.js/types/params";
+import { WaveSurferOptions } from "wavesurfer.js";
 import { WaveFormProps } from "../components/WaveForm";
 
 
 export const waveFormPropsList = [
   "audioRate",
-  "audioContext",
-  "audioScriptProcessor",
   "autoCenter",
   "backend",
-  "backgroundColor",
   "barGap",
   "barHeight",
-  "barMinHeight",
   "barRadius",
   "barWidth",
-  "closeAudioContext",
   "cursorColor",
   "cursorWidth",
   "fillParent",
-  "forceDecode",
   "height",
   "hideScrollbar",
   "interact",
-  "loopSelection",
-  "maxCanvasWidth",
+  "media",
   "mediaControls",
-  "mediaType",
   "minPxPerSec",
   "normalize",
-  "partialRender",
-  "pixelRatio",
   "progressColor",
-  "removeMediaElementOnDestroy",
-  "renderer",
-  "responsive",
-  "scrollParent",
-  "skipLength",
   "splitChannels",
   "waveColor",
-  "autoCenterRate",
-  "autoCenterImmediately",
 
-  "drawingContextAttributes",
   "duration",
 
-  "ignoreSilenceMode",
-
-  "rtl",
-  "splitChannelsOptions",
-  "vertical",
-  "xhr"
+  "fetchParams"
 ] as const;
 
-const getWaveFormOptionsFromProps = (props: WaveFormProps): Omit<WaveSurferParams, 'container'> => {
+const getWaveFormOptionsFromProps = (props: WaveFormProps): Omit<WaveSurferOptions, 'container'> => {
   if (!props) return {};
 
   return waveFormPropsList.reduce<Record<typeof waveFormPropsList[number], any>>((waveFormOptions, optionName) => {

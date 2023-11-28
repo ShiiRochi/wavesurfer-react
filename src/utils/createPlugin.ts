@@ -1,7 +1,7 @@
-import { PluginDefinition } from "wavesurfer.js/types/plugin";
+import { GenericPlugin } from "wavesurfer.js/dist/base-plugin";
 import { PluginType } from "../types";
 
-export default function createPlugin(pluginObj: PluginType): PluginDefinition {
+export default function createPlugin<GPlug extends GenericPlugin>(pluginObj: PluginType<GPlug>): GPlug {
   const { plugin, options, creator = 'create'} = pluginObj;
 
   const createMethod: any = plugin[creator as keyof typeof plugin];

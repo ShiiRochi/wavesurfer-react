@@ -1,13 +1,16 @@
 import { useEffect, useRef } from "react";
-import { Region } from "wavesurfer.js/src/plugin/regions";
-import { EventHandler } from "wavesurfer.js/types/util";
+import { Region, RegionEvents } from "wavesurfer.js/dist/plugins/regions";
 
-const useRegionEvent = (
+import { EventListener } from "../types";
+
+export type RegionEventListener = (region: Region, ...rest: Parameters<EventListener<RegionEvents, keyof RegionEvents>>) => void;
+
+function useRegionEvent<K extends keyof RegionEvents>(
   ref: Region | null | undefined,
-  eventName: string,
-  callback?: EventHandler
-) => {
-  const callbackRef = useRef<EventHandler | null>(null);
+  eventName: K,
+  callback?: RegionEventListener
+) {
+  const callbackRef = useRef<EventListener<RegionEvents, keyof RegionEvents> | null>(null);
 
   useEffect(() => {
     if (!ref) {
@@ -25,6 +28,6 @@ const useRegionEvent = (
       callbackRef.current = null;
     };
   }, [ref, eventName, callback]);
-};
+}
 
 export default useRegionEvent;

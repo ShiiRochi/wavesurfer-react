@@ -1,22 +1,23 @@
 import { useEffect, useRef, useState } from "react";
-import { Region as RegionWS, RegionParams } from "wavesurfer.js/src/plugin/regions";
-import { EventHandler } from "wavesurfer.js/types/util";
-import useRegionEvent from "../hooks/useRegionEvent";
+import RegionsPlugin, { Region as RegionWS, RegionParams } from "wavesurfer.js/dist/plugins/regions";
+import useRegionEvent, { RegionEventListener } from "../hooks/useRegionEvent";
 import useWavesurferContext from "../hooks/useWavesurferContext";
 import { UpdatableRegionProps } from "../constants/updatableRegionProps";
+import useRegionPluginEvent, { RegionPluginEventListener } from "../hooks/useRegionPluginEvent";
 
 export interface RegionProps extends RegionParams {
-  onClick?: EventHandler;
-  onOver?: EventHandler;
-  onLeave?: EventHandler;
-  onDoubleClick?: EventHandler;
-  onIn?: EventHandler;
-  onOut?: EventHandler;
-  onRemove?: EventHandler;
-  onUpdate?: EventHandler;
-  onUpdateEnd?: EventHandler;
+  onClick?: RegionEventListener;
+  onOver?: RegionEventListener;
+  onLeave?: RegionEventListener;
+  onDoubleClick?: RegionEventListener;
+  onIn?: RegionPluginEventListener;
+  onOut?: RegionPluginEventListener;
+  onRemove?: RegionEventListener;
+  onUpdate?: RegionEventListener;
+  onUpdateEnd?: RegionEventListener;
   id: string;
 }
+
 export const Region = ({
   onOver,
   onLeave,
@@ -29,7 +30,9 @@ export const Region = ({
   onUpdateEnd,
   ...props
 }: RegionProps) => {
-  const waveSurfer = useWavesurferContext();
+  const [waveSurfer, ,plugins] = useWavesurferContext()!;
+
+  const regionPlug = plugins.find(p => p instanceof RegionsPlugin) as RegionsPlugin | undefined;
 
   const isRenderedCache = useRef(false);
 
@@ -44,7 +47,7 @@ export const Region = ({
   useEffect(
     () => {
       // If there is a regionRef, then process update on any props update
-      regionRef?.update(UpdatableRegionProps.reduce<RegionParams>(
+      regionRef?.setOptions(UpdatableRegionProps.reduce(
         (result, prop) => {
           if (regionRef[prop] !== props[prop]) {
             return {
@@ -55,7 +58,7 @@ export const Region = ({
 
           return result;
         },
-        { id: props.id }
+        { id: props.id } as Omit<RegionParams, 'minLength' | 'maxLength'>
       ));
     },
     UpdatableRegionProps.map((prop) => props[prop])
@@ -65,30 +68,31 @@ export const Region = ({
     if (!isRenderedCache.current && waveSurfer) {
       isRenderedCache.current = true;
 
-      let region;
-
-      region = waveSurfer.regions.list[props.id];
+      let region = regionPlug?.getRegions().find(r => r.id === props.id);
 
       if (!region) {
-        region = waveSurfer.addRegion(props);
+        region = regionPlug?.addRegion(props);
       }
+      console.log({ region });
+
+      if (!region) return;
 
       setRegionRef(region);
     }
     // eslint-disable-next-line
-  }, [waveSurfer]);
+  }, [waveSurfer, regionPlug]);
 
   useRegionEvent(regionRef, "click", onClick);
 
-  useRegionEvent(regionRef, "mouseenter", onOver);
+  useRegionEvent(regionRef, "over", onOver);
 
-  useRegionEvent(regionRef, "mouseleave", onLeave);
+  useRegionEvent(regionRef, "leave", onLeave);
 
   useRegionEvent(regionRef, "dblclick", onDoubleClick);
 
-  useRegionEvent(regionRef, "in", onIn);
+  useRegionPluginEvent(regionPlug, "region-in", onIn);
 
-  useRegionEvent(regionRef, "out", onOut);
+  useRegionPluginEvent(regionPlug, "region-out", onOut);
 
   useRegionEvent(regionRef, "remove", onRemove);
 

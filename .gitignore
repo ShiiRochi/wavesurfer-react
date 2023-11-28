@@ -1,8 +1,9 @@
 .idea
 /node_modules/
-demo
 dist
 npm-debug.log
 debug.log
+
+/demo/src/wavesurfer-react
 
 __dev__

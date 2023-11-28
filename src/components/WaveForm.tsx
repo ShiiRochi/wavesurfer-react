@@ -1,6 +1,6 @@
 import React from "react";
-import { WaveSurferParams } from "wavesurfer.js/types/params";
-export interface WaveFormProps extends Partial<WaveSurferParams> {
+import { WaveSurferOptions } from "wavesurfer.js";
+export interface WaveFormProps extends Partial<WaveSurferOptions> {
   id: string;
   children?: React.ReactNode;
 }

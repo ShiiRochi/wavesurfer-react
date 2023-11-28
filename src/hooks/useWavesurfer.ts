@@ -1,40 +1,62 @@
 import {useEffect, useRef, useState} from "react";
-import { PluginDefinition } from "wavesurfer.js/types/plugin";
+import { GenericPlugin } from "wavesurfer.js/dist/base-plugin";
 import createWavesurfer, {WaveSurfer as WaveSurferRef, WaveSurfer} from "../utils/createWavesurfer";
 import createPlugin from "../utils/createPlugin";
 import getDifference from "../utils/getDifference";
 import { PluginType } from "../types";
 
-type UseWaveSurferParams = {
+export type UseWaveSurferParams<GPlug extends GenericPlugin> = {
     container?: string | HTMLElement,
-    plugins: PluginType[],
+    plugins: PluginType<GPlug>[],
     onMount: (wavesurferRef: null | WaveSurferRef) => any
 };
 
-export default function useWavesurfer({ container, plugins = [], onMount, ...props }: UseWaveSurferParams) {
-    const usedPluginsListCache = useRef<PluginDefinition[]>([]);
+export type PluginDictionary<GPlug extends GenericPlugin> = Record<string, GPlug>;
+
+
+function createPluginsMap<GPlug extends GenericPlugin>(curr: PluginDictionary<GPlug>, plugins: PluginType<GPlug>[]): PluginDictionary<GPlug> {
+    const result: PluginDictionary<GPlug> = {};
+
+    const stack = [...plugins];
+
+    while (stack.length >= 1) {
+        const node = stack.shift()!;
+
+        const hasThisPluginAlready = !!curr[node.key];
+
+        if (hasThisPluginAlready) {
+            result[node.key] = curr[node.key]!;
+        } else {
+            result[node.key] = createPlugin(node);
+        }
+    }
+
+    return result;
+}
+
+export default function useWavesurfer<GPlug extends GenericPlugin>({ container, plugins = [], onMount, ...props }: UseWaveSurferParams<GPlug>) {
+    const [pluginsMap, setPluginsMap] = useState<PluginDictionary<GPlug>>({});
+    // is used to keep track of initialized plugins
+    const initialized$ = useRef<string[]>([]);
+
     const [wavesurfer, setWavesurfer] = useState<WaveSurfer | null>(null);
 
     useEffect(() => {
         if (!container) return;
 
-        let _plugins: PluginDefinition[] = [];
-        // construct initial plugins list
+        const _plugins = createPluginsMap(pluginsMap, plugins);
 
-        if (plugins) {
-            _plugins = plugins.map(createPlugin);
-        }
-
-        usedPluginsListCache.current = _plugins;
+        initialized$.current = Object.keys(_plugins);
 
         const ws = createWavesurfer({
             container,
             ...props,
-            plugins: _plugins,
+            plugins: Object.values(_plugins),
         })
 
         onMount?.(ws);
 
+        setPluginsMap(_plugins);
         setWavesurfer(ws);
 
         return () => {
@@ -42,32 +64,35 @@ export default function useWavesurfer({ container, plugins = [], onMount, ...pro
         };
     }, [container]);
 
-    // TODO: update waveform appearance
-    // useEffect(() => {}, [props]);
-
-    // TODO: think about whether its place is this hook?
     useEffect(() => {
         if (wavesurfer) {
-            const nextPluginsMap = plugins.map(createPlugin);
+            const _plugins = createPluginsMap(pluginsMap, plugins);
 
             const { disabled, enabled } = getDifference(
-                usedPluginsListCache.current,
-                nextPluginsMap
+              pluginsMap,
+              _plugins
             );
 
-            usedPluginsListCache.current = nextPluginsMap;
+            // destroy plugin, wavesurfer self removes it from plugin array
+            Object.keys(disabled).forEach(plugKey => {
+                disabled[plugKey]!.destroy();
+            })
 
-            disabled.forEach((plugin) => {
-                if (!plugin.name) return;
-                wavesurfer?.destroyPlugin(plugin.name);
+            Object.keys(enabled).forEach((pluginKey) => {
+                // do not initialize plugin under the same key twice or more times
+                if (initialized$.current.includes(pluginKey)) return;
+
+                console.log('register plugin', pluginKey, enabled[pluginKey]);
+
+                wavesurfer?.registerPlugin(enabled[pluginKey]!);
             });
 
-            enabled.forEach((plugin) => {
-                if (!plugin.name) return;
-                wavesurfer?.addPlugin(plugin).initPlugin(plugin.name);
-            });
+            // register only enabled plugins
+            initialized$.current = Object.keys(enabled);
+
+            setPluginsMap(_plugins);
         }
     }, [plugins]);
 
-    return wavesurfer;
+    return [wavesurfer as WaveSurfer, pluginsMap, Object.values(pluginsMap)] as const;
 }
