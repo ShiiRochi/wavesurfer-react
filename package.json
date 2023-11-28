@@ -1,6 +1,6 @@
 {
   "name": "wavesurfer-react",
-  "version": "2.2.3",
+  "version": "3.0.0",
   "description": "react wrapper for wavesurfer.js",
   "keywords": [
     "react",
