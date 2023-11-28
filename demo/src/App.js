@@ -69,12 +69,26 @@ function App() {
         options: { dragSelection: true }
       },
       timelineVis && {
-        key: "timeline",
+        key: "top-timeline",
         plugin: TimelinePlugin,
         options: {
-          container: "#timeline"
+          height: 20,
+          insertPosition: 'beforebegin',
+          style: {
+            color: '#2D5B88',
+          }
         }
       },
+      timelineVis && {
+        key: "bottom-timeline",
+        plugin: TimelinePlugin,
+        options: {
+          height: 10,
+          style: {
+            color: '#6A3274',
+          }
+        }
+      }
       // {
       //   plugin: MarkersPlugin,
       //   options: {
