@@ -15,7 +15,7 @@
     "prebuild": "rimraf dist/*",
     "build": "tsc",
     "prepublishOnly": "npm run build",
-    "build:dev": "npm run build && cd ./demo/src && rimraf wavesurfer-react/* && cd .. && cd .. && cp -r ./dist/ ./demo/src/wavesurfer-react/",
+    "build:dev": "npm run build && cd ./demo/src && rimraf wavesurfer-react/* && cd ../.. && cp -r ./dist/ ./demo/src/wavesurfer-react/",
     "start:demo": "cd ./demo && npm run start",
     "lint": "eslint --ext .ts src --fix"
   },
