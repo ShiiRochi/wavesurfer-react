@@ -21,6 +21,7 @@
         "@typescript-eslint"
     ],
     "rules": {
+        "@typescript-eslint/no-explicit-any": "off"
     },
     "ignorePatterns": ["demo"],
     "settings": {
