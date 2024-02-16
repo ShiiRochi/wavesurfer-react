@@ -8,6 +8,11 @@ and to do it as close to react style of doing things as its maintainer(-s) can p
 
 [<img src="https://img.shields.io/badge/Codesandbox-040404?style=for-the-badge&logo=codesandbox&logoColor=DBDBDB">](https://codesandbox.io/p/sandbox/wavesurfer-react-3-0-w8vr3m)
 
+[<img alt="Static Badge" src="https://img.shields.io/badge/Live_Demo-black?style=for-the-badge&logo=yandexcloud&logoColor=red">
+](https://wavesurfer-react.website.yandexcloud.net)
+
+
+
 # Table of Contents
 
 - [Wavesurfer React](#wavesurfer-react)
