@@ -8,13 +8,13 @@ runs:
     - name: Yarn Cache
       uses: actions/cache@v3
       with:
-        path: '**/node_modules'
-        key: node-modules-${{ hashFiles('**/yarn.lock') }}
+        path: '/node_modules/**'
+        key: node-modules-${{ hashFiles('**/package-lock.json') }}
 
-    - name: Yarn Install
+    - name: Install
       shell: bash
-      run: yarn install --immutable
+      run: npm ci
 
     - name: Yarn Install Peer
       shell: bash
-      run: yarn add wavesurfer.js
+      run: npm install wavesurfer.js

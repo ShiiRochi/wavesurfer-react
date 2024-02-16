@@ -1,0 +1,25 @@
+name: "Deploy to S3"
+description: "Deploy a static website to S3"
+inputs:
+  bucket:
+    description: "The S3 bucket name"
+    required: true
+  bucket-region:
+    description: "The S3 bucket region"
+    required: false
+    default: "ru-central1"
+  dist-folder:
+    description: "The folder containing the deployable files"
+    required: true
+outputs:
+  website-url:
+    description: "The URL of deployed website"
+runs:
+  using: 'node20'
+  # All paths below are relative
+  # to reusable action file location
+  #
+  # pre: <-- script executed before
+  main: 'dist/index.js'
+  # post: <-- script executed after
+

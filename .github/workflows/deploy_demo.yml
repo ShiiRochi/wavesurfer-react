@@ -1,0 +1,69 @@
+name: Deploy Demo
+on:
+  push:
+    branches:
+      - master
+    paths-ignore:
+      - '*.md' # all MD files
+      - '.eslintrc.json'
+      - 'LICENSE'
+      - '.gitignore'
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        uses: ./.github/actions/install_dependencies
+
+      - name: Lint
+        run: |
+          npm run lint
+  deploy:
+    needs: [ lint ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        uses: ./.github/actions/install_dependencies
+
+      - name: Build
+        run: |
+          npm run build
+
+      # вложить дистрибутив в папку с демо по правильному пути
+      - name: Move dist
+        run: |
+          npm run demo:sync
+
+      - name: Install demo dependencies
+        run: |
+          cd ./demo && npm ci
+
+      - name: Build demo
+        run: |
+          npm run build:demo
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: demo-dist
+          path: demo/build
+
+      # папку с демо отправить в бакет
+      - name: Deploy
+        uses: ./.github/actions/deploy-s3-javascript
+        id: deploy
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        with:
+          bucket: wavesurfer-react
+          dist-folder: ./demo/build
+      - name: Output information
+        run: |
+          echo "Live URL: ${{ steps.deploy.outputs.website-url }}"

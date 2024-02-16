@@ -299,6 +299,7 @@ function App() {
           ))}
           {isLoaded && markers.map(markerProps => (
             <Marker
+              key={markerProps.id}
               onUpdateEnd={handleMarkerUpdate}
               start={markerProps.time}
               color={markerProps.color}
