@@ -21,8 +21,5 @@ jobs:
 
       - uses: ./.github/workflows/yarn
 
-      - name: Install Peer
-        run: yarn add wavesurfer.js
-
       - name: Build
         run: yarn build
