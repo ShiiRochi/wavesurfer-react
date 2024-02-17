@@ -35,6 +35,7 @@ function createPluginsMap<GPlug extends GenericPlugin>(curr: PluginDictionary<GP
 }
 
 export default function useWavesurfer<GPlug extends GenericPlugin>({ container, plugins = [], onMount, ...props }: UseWaveSurferParams<GPlug>) {
+    const isInitilizing$ = useRef<boolean>(false);
     const [pluginsMap, setPluginsMap] = useState<PluginDictionary<GPlug>>({});
     // is used to keep track of initialized plugins
     const initialized$ = useRef<string[]>([]);
@@ -43,6 +44,10 @@ export default function useWavesurfer<GPlug extends GenericPlugin>({ container, 
 
     useEffect(() => {
         if (!container) return;
+
+        if (isInitilizing$.current) return;
+
+        isInitilizing$.current = true;
 
         const _plugins = createPluginsMap(pluginsMap, plugins);
 
