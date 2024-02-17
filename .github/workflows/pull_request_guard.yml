@@ -7,7 +7,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - uses: ./.github/workflows/yarn
+      - uses: ./.github/actions/install_dependencies
 
       - uses: Maggi64/eslint-plus-action@master
         with:
