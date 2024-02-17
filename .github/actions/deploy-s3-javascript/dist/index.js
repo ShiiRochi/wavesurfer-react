@@ -27834,7 +27834,6 @@ var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
 (() => {
 const core = __nccwpck_require__(2186);
-// const githun = require('@actions/github');
 const exec = __nccwpck_require__(1514);
 
 function run() {
@@ -27847,10 +27846,9 @@ function run() {
 
     // upload to S3
     const s3URI = `s3://${bucket$}`;
-    
+
     exec.exec(`aws s3 sync ${dist$} ${s3URI} --region ${bucketRegion$} --endpoint-url=https://storage.yandexcloud.net`)
 
-    core.notice("Hello world from my custom JavaScript Action!");
     const website$ = `https://${bucket$}.website.yandexcloud.net`;
     core.setOutput('website-url', website$);
 }

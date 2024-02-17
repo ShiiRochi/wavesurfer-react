@@ -14,7 +14,6 @@ function run() {
 
     exec.exec(`aws s3 sync ${dist$} ${s3URI} --region ${bucketRegion$} --endpoint-url=https://storage.yandexcloud.net`)
 
-    core.notice("Hello world from my custom JavaScript Action!");
     const website$ = `https://${bucket$}.website.yandexcloud.net`;
     core.setOutput('website-url', website$);
 }
