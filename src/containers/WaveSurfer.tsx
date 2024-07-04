@@ -29,9 +29,4 @@ function WaveSurfer<GPlug extends GenericPlugin>({ children, plugins = [], onMou
   );
 }
 
-WaveSurfer.defaultProps = {
-  children: null,
-  plugins: [],
-};
-
 export default WaveSurfer;
