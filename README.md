@@ -1,4 +1,5 @@
 # Wavesurfer React
+
 A simple wrapper around an awesome library called [wavesurfer.js](https://wavesurfer-js.org).  
 
 The purpose of the package is to provide an abstraction over wavesurfer.js API 
@@ -11,7 +12,10 @@ and to do it as close to react style of doing things as its maintainer(-s) can p
 [<img alt="Static Badge" src="https://img.shields.io/badge/Live_Demo-black?style=for-the-badge&logo=yandexcloud&logoColor=red">
 ](https://wavesurfer-react.website.yandexcloud.net)
 
-
+> [!IMPORTANT]  
+> Since October 2023 I am occupied on a full-time job where it's not currently required to use any audio related modules.  
+> I'll try to pay as much attention as possible for this repo, but not as much as previously because I need to prioritize things.  
+> I'll keep this module to be as simple as possible and open to contributions.
 
 # Table of Contents
 
@@ -173,3 +177,11 @@ Comments related to this issue are:
 **INFO**: use `wavesurfer.js@^7.4.5` to have this issue fixed
 
 **Solution** to this problem is **to execute** `wavesurfer.setOptions({})`, right after Timeline plugin is added again via `plugins` prop second time and further.
+
+## Infographics
+
+### Stars History
+
+Thanks for your support and contributions!
+
+[![Star History Chart](https://api.star-history.com/svg?repos=ShiiRochi/wavesurfer-react&type=Date)](https://star-history.com/#ShiiRochi/wavesurfer-react&Date)
