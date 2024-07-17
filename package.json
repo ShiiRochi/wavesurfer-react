@@ -15,10 +15,10 @@
     "prebuild": "rimraf dist/*",
     "build": "tsc",
     "prepublishOnly": "npm run build",
-    "build:dev": "npm run build && cd ./demo/src && rimraf wavesurfer-react/* && cd ../.. && cp -r ./dist/ ./demo/src/wavesurfer-react/",
+    "build:dev": "npm run build && npm run demo:sync && cd ./demo && npm install",
     "build:demo": "cd ./demo && npm run build",
     "start:demo": "cd ./demo && npm run start",
-    "demo:sync": "cd ./demo/src && rimraf wavesurfer-react/* && cd ../.. && cp -r ./dist/ ./demo/src/wavesurfer-react/",
+    "demo:sync": "rm -rf ../wavesurfer-react-artifacts/demo_dist && mkdir -p ../wavesurfer-react-artifacts && rsync -aRv ./dist ../wavesurfer-react-artifacts/demo_dist && cp package.json package-lock.json README.md ../wavesurfer-react-artifacts/demo_dist",
     "lint": "eslint --ext .ts src --fix"
   },
   "peerDependencies": {
