@@ -10,7 +10,7 @@ jobs:
       - uses: ./.github/actions/install_dependencies
 
       - name: Lint
-        run: npm run lint
+        run: pnpm run lint
 
   build:
     needs: eslint
@@ -21,4 +21,4 @@ jobs:
       - uses: ./.github/actions/install_dependencies
 
       - name: Build
-        run: npm run build
+        run: pnpm run build

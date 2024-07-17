@@ -43,7 +43,7 @@ jobs:
 
       - name: Install demo dependencies
         run: |
-          cd ./demo && npm ci
+          cd ./demo && pnpm install --frozen-lockfile
 
       - name: Build demo
         run: |
