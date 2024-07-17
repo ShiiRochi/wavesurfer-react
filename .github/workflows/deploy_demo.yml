@@ -21,7 +21,7 @@ jobs:
 
       - name: Lint
         run: |
-          npm run lint
+          pnpm run lint
   deploy:
     needs: [ lint ]
     runs-on: ubuntu-latest
@@ -34,12 +34,12 @@ jobs:
 
       - name: Build
         run: |
-          npm run build
+          pnpm run build
 
       # вложить дистрибутив в папку с демо по правильному пути
       - name: Move dist
         run: |
-          npm run demo:sync
+          pnpm run demo:sync
 
       - name: Install demo dependencies
         run: |
@@ -47,10 +47,10 @@ jobs:
 
       - name: Build demo
         run: |
-          npm run build:demo
+          pnpm run build:demo
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: demo-dist
           path: demo/build

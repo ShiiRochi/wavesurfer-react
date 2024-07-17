@@ -5,16 +5,17 @@ description: 'Install node modules'
 runs:
   using: 'composite'
   steps:
-    - name: Yarn Cache
-      uses: actions/cache@v3
+    - name: Install pnpm
+      uses: pnpm/action-setup@v4
       with:
-        path: '/node_modules/**'
-        key: node-modules-${{ hashFiles('**/package-lock.json') }}
+        version: 9
 
-    - name: Install
-      shell: bash
-      run: npm ci
+    - name: Use Node.js 20
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20
+        cache: 'pnpm'
 
-    - name: Yarn Install Peer
+    - name: Install dependencies
       shell: bash
-      run: npm install wavesurfer.js
+      run: pnpm install
