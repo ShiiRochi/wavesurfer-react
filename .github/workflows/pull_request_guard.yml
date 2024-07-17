@@ -9,17 +9,16 @@ jobs:
 
       - uses: ./.github/actions/install_dependencies
 
-      - uses: Maggi64/eslint-plus-action@master
-        with:
-          npmInstall: false
+      - name: Lint
+        run: npm run lint
 
   build:
     needs: eslint
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - uses: ./.github/actions/install_dependencies
 
       - name: Build
-        run: yarn build
+        run: npm run build

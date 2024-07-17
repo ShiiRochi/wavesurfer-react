@@ -11,7 +11,8 @@
     "react-scripts": "5.0.1",
     "styled-components": "^6.1.0",
     "wavesurfer.js": "^7.4.12",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "wavesurfer-react": "../../wavesurfer-react-artifacts/demo_dist"
   },
   "scripts": {
     "start": "react-scripts start",

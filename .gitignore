@@ -1,6 +1,7 @@
 .idea
 **/node_modules/
 dist
+demo_dist
 !/.github/actions/**/dist
 npm-debug.log
 debug.log
