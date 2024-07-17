@@ -18,7 +18,7 @@
     "build:dev": "pnpm run build && pnpm run demo:sync && cd ./demo && pnpm install",
     "build:demo": "cd ./demo && pnpm run build",
     "start:demo": "cd ./demo && pnpm run start",
-    "demo:sync": "rm -rf ../wavesurfer-react-artifacts/demo_dist && mkdir -p ../wavesurfer-react-artifacts && rsync -aRv ./dist ../wavesurfer-react-artifacts/demo_dist && cp package.json package-lock.json README.md ../wavesurfer-react-artifacts/demo_dist",
+    "demo:sync": "rm -rf ../wavesurfer-react-artifacts/demo_dist && mkdir -p ../wavesurfer-react-artifacts && rsync -aRv ./dist ../wavesurfer-react-artifacts/demo_dist && cp package.json pnpm-lock.yaml README.md ../wavesurfer-react-artifacts/demo_dist",
     "lint": "eslint --ext .ts src --fix"
   },
   "peerDependencies": {
