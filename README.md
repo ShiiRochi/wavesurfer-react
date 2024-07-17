@@ -1,5 +1,9 @@
 # Wavesurfer React
 
+[![minified](https://badgen.net/bundlephobia/min/wavesurfer-react)](https://bundlephobia.com/package/wavesurfer-react)
+[![minzipped](https://badgen.net/bundlephobia/minzip/wavesurfer-react)](https://bundlephobia.com/package/wavesurfer-react)
+[![downloads](https://badgen.net/npm/dw/wavesurfer-react)](https://npmjs.com/package/wavesurfer-react)
+
 A simple wrapper around an awesome library called [wavesurfer.js](https://wavesurfer-js.org).  
 
 The purpose of the package is to provide an abstraction over wavesurfer.js API 
