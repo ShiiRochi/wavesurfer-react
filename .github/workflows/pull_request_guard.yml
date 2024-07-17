@@ -9,9 +9,8 @@ jobs:
 
       - uses: ./.github/actions/install_dependencies
 
-      - uses: Maggi64/eslint-plus-action@master
-        with:
-          npmInstall: false
+      - name: Lint
+        run: npm run lint
 
   build:
     needs: eslint
@@ -22,4 +21,4 @@ jobs:
       - uses: ./.github/actions/install_dependencies
 
       - name: Build
-        run: yarn build
+        run: npm run build
