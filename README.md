@@ -1,4 +1,6 @@
-# Wavesurfer React
+<img src="https://github.com/user-attachments/assets/c1c71292-9758-477e-ad82-ad94557163a6" width="125"/>
+
+<h1>Wavesurfer React</h1>
 
 [![minified](https://badgen.net/bundlephobia/min/wavesurfer-react)](https://bundlephobia.com/package/wavesurfer-react)
 [![minzipped](https://badgen.net/bundlephobia/minzip/wavesurfer-react)](https://bundlephobia.com/package/wavesurfer-react)
@@ -189,3 +191,8 @@ Comments related to this issue are:
 Thanks for your support and contributions!
 
 [![Star History Chart](https://api.star-history.com/svg?repos=ShiiRochi/wavesurfer-react&type=Date)](https://star-history.com/#ShiiRochi/wavesurfer-react&Date)
+
+
+## Credits
+
+Logo: Facebook, <a href="https://commons.wikimedia.org/wiki/File:React-icon.svg">React-icon</a>, place another image at the center of this image by shiirochi@yandex.ru, <a href="https://creativecommons.org/licenses/by-sa/1.0/legalcode" rel="license">CC BY-SA 1.0</a>
