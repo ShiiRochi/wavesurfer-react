@@ -73,7 +73,6 @@ export const Region = ({
       if (!region) {
         region = regionPlug?.addRegion(props);
       }
-      console.log({ region });
 
       if (!region) return;
 
