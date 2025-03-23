@@ -9,14 +9,14 @@
     "strict": true,
     "allowSyntheticDefaultImports": true,
     "noUncheckedIndexedAccess": true,
+    "emitDeclarationOnly": false,
+    "declaration": true,
+    "moduleResolution": "bundler",
     "module": "esnext",
-    "moduleResolution": "node",
-    "outDir": "dist",
-    "sourceMap": true,
-    "declaration": true
+    "outDir": "dist/types"
   },
   "include": [
-    "src/**/*"
+    "src"
   ],
   "exclude": [
     "src/**/*.spec.tsx",
