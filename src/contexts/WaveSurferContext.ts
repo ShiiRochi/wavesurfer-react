@@ -1,8 +1,6 @@
-import { createContext } from 'react';
-import WaveSurfer from 'wavesurfer.js';
-import { GenericPlugin } from "wavesurfer.js/dist/base-plugin";
-import { PluginDictionary } from "../hooks/useWavesurfer";
+import { createContext } from "react";
+import { WaveSurferContextValue } from "../types";
 
-const WaveSurferContext = createContext<readonly [WaveSurfer, PluginDictionary<GenericPlugin>, GenericPlugin[]] | null>(null);
+const WaveSurferContext = createContext<WaveSurferContextValue>(null);
 
 export default WaveSurferContext;

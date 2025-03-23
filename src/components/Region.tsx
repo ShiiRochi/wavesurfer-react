@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import RegionsPlugin, { Region as RegionWS, RegionParams } from "wavesurfer.js/dist/plugins/regions";
+import RegionsPlugin, { Region as RegionWS, RegionParams } from "wavesurfer.js/plugins/regions";
 import useRegionEvent, { RegionEventListener } from "../hooks/useRegionEvent";
 import useWavesurferContext from "../hooks/useWavesurferContext";
 import { UpdatableRegionProps } from "../constants/updatableRegionProps";
