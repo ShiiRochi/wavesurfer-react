@@ -1,6 +1,6 @@
 {
   "name": "wavesurfer-react",
-  "version": "3.0.4",
+  "version": "3.0.5-beta.0",
   "description": "react wrapper for wavesurfer.js",
   "keywords": [
     "react",
@@ -71,5 +71,6 @@
   "bugs": {
     "url": "https://github.com/ShiiRochi/wavesurfer-react/issues"
   },
-  "homepage": "https://github.com/ShiiRochi/wavesurfer-react#readme"
+  "homepage": "https://github.com/ShiiRochi/wavesurfer-react#readme",
+  "files": ["dist", "README.md", "LICENSE"]
 }
