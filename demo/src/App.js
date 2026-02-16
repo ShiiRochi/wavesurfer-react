@@ -5,17 +5,13 @@ import React, {
   useState,
   useMemo
 } from "react";
-import styled from "styled-components";
 import { WaveSurfer, WaveForm, Region, Marker } from "wavesurfer-react";
-import "./App.css";
+import styles from "./App.module.css";
 import RegionsPlugin from "wavesurfer.js/dist/plugins/regions";
 import TimelinePlugin from "wavesurfer.js/dist/plugins/timeline";
 
-const Buttons = styled.div`
-  display: inline-block;
-`;
-
-const Button = styled.button``;
+const APP_LOGO_URL = "/logo.png";
+const APP_VERSION = process.env.REACT_APP_VERSION || "3.0.5";
 
 /**
  * @param min
@@ -287,40 +283,83 @@ function App() {
   };
 
   return (
-    <div className="App">
-      <WaveSurfer plugins={plugins} onMount={handleWSMount} cursorColor="transparent" container="#waveform">
-        <WaveForm>
-          {isLoaded && regions.map((regionProps) => (
-            <Region
-              onUpdateEnd={handleRegionUpdate}
-              key={regionProps.id}
-              {...regionProps}
-            />
-          ))}
-          {isLoaded && markers.map(markerProps => (
-            <Marker
-              key={markerProps.id}
-              onUpdateEnd={handleMarkerUpdate}
-              start={markerProps.time}
-              color={markerProps.color}
-              content={markerProps.label}
-              drag={markerProps.draggable}
-            />
-          ))}
-        </WaveForm>
-        <div id="timeline" />
-      </WaveSurfer>
-      <Buttons>
-        <Button onClick={generateRegion}>Generate region</Button>
-        <Button onClick={generateMarker}>Generte Marker</Button>
-        <Button onClick={play}>Play / Pause</Button>
-        <Button onClick={removeLastRegion}>Remove last region</Button>
-        <Button onClick={removeLastMarker}>Remove last marker</Button>
-        <Button onClick={shuffleLastMarker}>Shuffle last marker</Button>
-        <Button onClick={toggleTimeline}>Toggle timeline</Button>
-        <Button onClick={setZoom50}>zoom 50%</Button>
-      </Buttons>
-    </div>
+    <main className={styles.app}>
+      <header className={styles.header}>
+        <div className={styles.brand}>
+          <img
+            src={APP_LOGO_URL}
+            alt="Wavesurfer React logo"
+            className={styles.logo}
+            width={56}
+            height={56}
+          />
+          <div>
+            <h1 className={styles.title}>Wavesurfer React</h1>
+            <p className={styles.subtitle}>Interactive regions and markers demo</p>
+          </div>
+        </div>
+        <span className={styles.badge}>v{APP_VERSION}</span>
+      </header>
+
+      <section className={styles.waveformCard}>
+        <WaveSurfer
+          plugins={plugins}
+          onMount={handleWSMount}
+          cursorColor="transparent"
+          container="#waveform"
+        >
+          <WaveForm className={styles.waveform}>
+            {isLoaded && regions.map((regionProps) => (
+              <Region
+                onUpdateEnd={handleRegionUpdate}
+                key={regionProps.id}
+                {...regionProps}
+              />
+            ))}
+            {isLoaded && markers.map((markerProps, index) => (
+              <Marker
+                key={`${markerProps.label}-${index}`}
+                onUpdateEnd={handleMarkerUpdate}
+                start={markerProps.time}
+                color={markerProps.color}
+                content={markerProps.label}
+                drag={markerProps.draggable}
+              />
+            ))}
+          </WaveForm>
+          <div id="timeline" />
+        </WaveSurfer>
+      </section>
+
+      <section className={styles.controls}>
+        <div className={styles.buttons}>
+          <button type="button" className={styles.button} onClick={generateRegion}>
+            Generate region
+          </button>
+          <button type="button" className={styles.button} onClick={generateMarker}>
+            Generate marker
+          </button>
+          <button type="button" className={styles.button} onClick={play}>
+            Play / Pause
+          </button>
+          <button type="button" className={styles.button} onClick={removeLastRegion}>
+            Remove last region
+          </button>
+          <button type="button" className={styles.button} onClick={removeLastMarker}>
+            Remove last marker
+          </button>
+          <button type="button" className={styles.button} onClick={shuffleLastMarker}>
+            Shuffle last marker
+          </button>
+          <button type="button" className={styles.button} onClick={toggleTimeline}>
+            Toggle timeline
+          </button>
+          <button type="button" className={styles.button} onClick={setZoom50}>
+            Zoom 50%
+          </button>
+        </div>
+      </section>
+    </main>
   );
 }
 
