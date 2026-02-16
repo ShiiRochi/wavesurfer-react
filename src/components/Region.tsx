@@ -4,6 +4,7 @@ import useRegionEvent, { RegionEventListener } from "../hooks/useRegionEvent";
 import useWavesurferContext from "../hooks/useWavesurferContext";
 import { UpdatableRegionProps } from "../constants/updatableRegionProps";
 import useRegionPluginEvent, { RegionPluginEventListener } from "../hooks/useRegionPluginEvent";
+import { isRegionsPlugin } from "../utils/isRegionsPlugin";
 
 export interface RegionProps extends RegionParams {
   onClick?: RegionEventListener;
@@ -32,11 +33,10 @@ export const Region = ({
 }: RegionProps) => {
   const [waveSurfer, ,plugins] = useWavesurferContext()!;
 
+  const regPlugin = plugins.find((plugin) => isRegionsPlugin(plugin));
+
   const regionPlugin = useMemo(
-    () =>
-      plugins.find((plugin) => {
-        return "getRegions" in plugin && "addRegion" in plugin;
-      }) as RegionsPlugin | undefined,
+    () => regPlugin,
     [plugins]
   );
 
