@@ -32,21 +32,36 @@ const plugins = [
 configurations.push({
   input: mainInput,
   output: {
-    dir: `${distDir}`,
-    format: "esm",
+    dir: `${distDir}/esm`,
+    format: 'esm',
     preserveModules: true,
     preserveModulesRoot: srcDir,
-    entryFileNames: '[name].js'
+    entryFileNames: '[name].js',
   },
   plugins,
-  external
+  external,
+});
+
+// cjs
+configurations.push({
+  input: mainInput,
+  output: {
+    dir: `${distDir}/cjs`,
+    format: 'cjs',
+    exports: 'named',
+    preserveModules: true,
+    preserveModulesRoot: srcDir,
+    entryFileNames: '[name].cjs',
+  },
+  plugins,
+  external,
 });
 
 // ts types
 configurations.push({
   input: mainInput,
   output: {
-    dir: `${distDir}`,
+    dir: `${distDir}/types`,
     format: 'es',
     preserveModules: true,
     preserveModulesRoot: srcDir,

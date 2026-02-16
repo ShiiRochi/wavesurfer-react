@@ -43,6 +43,26 @@ and to do it as close to react style of doing things as its maintainer(-s) can p
 
 ## User Guide
 
+### Module formats (ESM/CJS)
+
+The package provides both module formats:
+
+- ESM build: `dist/esm`
+- CommonJS build: `dist/cjs`
+- Type declarations: `dist/types`
+
+Use `import` in modern environments:
+
+```js
+import { WaveSurfer, WaveForm } from 'wavesurfer-react';
+```
+
+Use `require` in CommonJS environments:
+
+```js
+const { WaveSurfer, WaveForm } = require('wavesurfer-react');
+```
+
 ### Components
 Package provides the following set of components:
 1. WaveSurfer
