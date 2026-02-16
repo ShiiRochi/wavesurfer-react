@@ -7,13 +7,27 @@
     "wavesurfer.js"
   ],
   "license": "MIT",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "type": "module",
+  "main": "./dist/cjs/index.cjs",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/types/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.cjs",
+      "types": "./dist/types/index.d.ts"
+    },
+    "./*": {
+      "import": "./dist/esm/*.js",
+      "require": "./dist/cjs/*.cjs",
+      "types": "./dist/types/*.d.ts"
+    }
+  },
   "author": "Denis Bogdanenko <shiirochi@yandex.ru>",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "prebuild": "rimraf dist/*",
-    "build": "tsc",
+    "build": "rollup -c",
     "prepublishOnly": "pnpm run build",
     "build:dev": "pnpm run build && pnpm run demo:sync && cd ./demo && pnpm install",
     "build:demo": "cd ./demo && pnpm run build",
@@ -27,6 +41,10 @@
   },
   "devDependencies": {
     "@babel/preset-typescript": "^7.16.7",
+    "@rollup/plugin-json": "^6.1.0",
+    "@rollup/plugin-node-resolve": "^16.0.1",
+    "@rollup/plugin-swc": "^0.4.0",
+    "@swc/core": "^1.11.11",
     "@types/react": "^17.0.38",
     "@typescript-eslint/eslint-plugin": "^6.11.0",
     "@typescript-eslint/parser": "^6.11.0",
@@ -36,7 +54,9 @@
     "eslint-plugin-react": "^7.28.0",
     "prettier": "^2.5.1",
     "rimraf": "^3.0.2",
-    "typescript": "^5.2.2"
+    "rollup": "^4.36.0",
+    "rollup-plugin-dts": "^6.2.1",
+    "typescript": "^5.5.3"
   },
   "browserslist": [
     ">0.2%",

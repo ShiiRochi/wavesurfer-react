@@ -3,7 +3,8 @@ import { GenericPlugin } from "wavesurfer.js/dist/base-plugin";
 import createWavesurfer, {WaveSurfer as WaveSurferRef, WaveSurfer} from "../utils/createWavesurfer";
 import createPlugin from "../utils/createPlugin";
 import getDifference from "../utils/getDifference";
-import { PluginType } from "../types";
+
+import type { PluginType } from "../types";
 
 export type UseWaveSurferParams<GPlug extends GenericPlugin> = {
     container?: string | HTMLElement,

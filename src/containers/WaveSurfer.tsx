@@ -3,9 +3,9 @@ import WaveSurferContext from "../contexts/WaveSurferContext";
 import { WaveSurfer as WaveSurferRef } from "../utils/createWavesurfer";
 import useWavesurfer from "../hooks/useWavesurfer";
 
-import { PluginType } from "../types";
 import { GenericPlugin } from "wavesurfer.js/dist/base-plugin";
 import { WaveSurferOptions } from "wavesurfer.js";
+import { PluginType } from "../types";
 
 export interface WaveSurferProps<GPlug extends GenericPlugin> extends Omit<WaveSurferOptions, "plugins"> {
   children: React.ReactNode;

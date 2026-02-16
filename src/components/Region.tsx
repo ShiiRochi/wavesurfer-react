@@ -1,9 +1,10 @@
-import { useEffect, useRef, useState } from "react";
-import RegionsPlugin, { Region as RegionWS, RegionParams } from "wavesurfer.js/dist/plugins/regions";
+import { useEffect, useMemo, useRef, useState } from "react";
+import RegionsPlugin, { Region as RegionWS, RegionParams } from "wavesurfer.js/plugins/regions";
 import useRegionEvent, { RegionEventListener } from "../hooks/useRegionEvent";
 import useWavesurferContext from "../hooks/useWavesurferContext";
 import { UpdatableRegionProps } from "../constants/updatableRegionProps";
 import useRegionPluginEvent, { RegionPluginEventListener } from "../hooks/useRegionPluginEvent";
+import { isRegionsPlugin } from "../utils/isRegionsPlugin";
 
 export interface RegionProps extends RegionParams {
   onClick?: RegionEventListener;
@@ -32,7 +33,12 @@ export const Region = ({
 }: RegionProps) => {
   const [waveSurfer, ,plugins] = useWavesurferContext()!;
 
-  const regionPlug = plugins.find(p => p instanceof RegionsPlugin) as RegionsPlugin | undefined;
+  const regPlugin = plugins.find((plugin) => isRegionsPlugin(plugin));
+
+  const regionPlugin = useMemo(
+    () => regPlugin,
+    [plugins]
+  );
 
   const isRenderedCache = useRef(false);
 
@@ -68,10 +74,10 @@ export const Region = ({
     if (!isRenderedCache.current && waveSurfer) {
       isRenderedCache.current = true;
 
-      let region = regionPlug?.getRegions().find(r => r.id === props.id);
+      let region = regionPlugin?.getRegions().find((r) => r.id === props.id);
 
       if (!region) {
-        region = regionPlug?.addRegion(props);
+        region = regionPlugin?.addRegion(props);
       }
 
       if (!region) return;
@@ -79,7 +85,7 @@ export const Region = ({
       setRegionRef(region);
     }
     // eslint-disable-next-line
-  }, [waveSurfer, regionPlug]);
+  }, [waveSurfer, regionPlugin]);
 
   useRegionEvent(regionRef, "click", onClick);
 
@@ -89,9 +95,9 @@ export const Region = ({
 
   useRegionEvent(regionRef, "dblclick", onDoubleClick);
 
-  useRegionPluginEvent(regionPlug, "region-in", onIn);
+  useRegionPluginEvent(regionPlugin, "region-in", onIn);
 
-  useRegionPluginEvent(regionPlug, "region-out", onOut);
+  useRegionPluginEvent(regionPlugin, "region-out", onOut);
 
   useRegionEvent(regionRef, "remove", onRemove);
 

@@ -1,7 +1,8 @@
 import { useEffect, useRef } from "react";
-import RegionsPlugin, { RegionsPluginEvents } from "wavesurfer.js/dist/plugins/regions";
+import RegionsPlugin, { RegionsPluginEvents } from "wavesurfer.js/plugins/regions";
 
-import { EventListener } from "../types";
+
+import type { EventListener } from "../types";
 
 export type RegionPluginEventListener = (...rest: Parameters<EventListener<RegionsPluginEvents, keyof RegionsPluginEvents>>) => void;
 
